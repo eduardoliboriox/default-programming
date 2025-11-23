@@ -181,7 +181,7 @@ def calcular_perda():
         frac_hora = perda / meta_hora
         minutos = int(frac_hora * 60)
         segundos = int((frac_hora * 60 - minutos) * 60)
-        resultado = f"{perda:.0f} peças → {minutos:02d}min {segundos:02d}s perdidos"
+        resultado = f"Perda de Produção: {perda:.0f} placas = {minutos:02d} Min {segundos:02d} Seg"
     else:
         resultado = "Sem perda"
 
