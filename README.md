@@ -63,10 +63,17 @@ python app.py
 
 ---
 
+## 🔗 Acesso ao Sistema (Deploy)
+
+O sistema está disponível online pelo Render:
+
+➡️ **https://sistema-meta-tool-venttos.onrender.com/**
+
+---
+
 ## 👨‍💻 Autor
 
 * Desenvolvido por **Eduardo Libório**
 * 📧 [eduardosoleno@protonmail.com](mailto:eduardosoleno@protonmail.com)
 
 ---
-
