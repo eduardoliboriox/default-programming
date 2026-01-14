@@ -7,12 +7,12 @@ Visualize a aplicação real através do link no final deste README.md.
 ```
 project/
 ├─ app/
-│   ├─ __init__.py            # create_app()
+│   ├─ __init__.py            # screate_app()
 │   ├─ config.py              # Config / env
 │   ├─ extensions.py          # DB (psycopg, etc)
 │   │
 │   ├─ routes/
-│   │   ├─ __init__.py        # registra blueprints
+│   │   ├─ __init__.py        # regitra blueprints
 │   │   ├─ pages.py           # rotas HTML
 │   │   └─ api.py             # rotas REST (JSON)
 │   │
