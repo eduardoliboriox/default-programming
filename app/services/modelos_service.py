@@ -37,24 +37,17 @@ def calcular_meta(dados):
 # 🔴 NOVA FUNÇÃO – PERDA DE PRODUÇÃO
 def calcular_perda_producao(meta_hora, producao_real):
     """
-    Retorna EXATAMENTE no formato:
-    '30 minutos e 00 segundos'
+    Ex:
+    meta_hora = 200
+    producao_real = 100
     """
 
-    meta_hora = float(meta_hora)
-    producao_real = float(producao_real)
-
-    if meta_hora <= 0 or producao_real >= meta_hora:
-        return "0 minutos e 00 segundos"
+    if producao_real >= meta_hora:
+        return "Sem perda de produção"
 
     proporcao = producao_real / meta_hora
-    minutos_perdidos = (1 - proporcao) * 60
+    minutos_perdidos = int((1 - proporcao) * 60)
+    segundos = 0
 
-    minutos = int(minutos_perdidos)
-    segundos = int(round((minutos_perdidos - minutos) * 60))
+    return f"{minutos_perdidos} minutos e {segundos:02d} segundos"
 
-    if segundos == 60:
-        minutos += 1
-        segundos = 0
-
-    return f"{minutos} minutos e {segundos:02d} segundos"

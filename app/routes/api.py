@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service
+from app.services.modelos_service import calcular_perda_producao
 
 bp = Blueprint("api", __name__)
 
@@ -12,12 +13,17 @@ def cadastrar():
     dados = request.form
     return jsonify(modelos_service.cadastrar_modelo(dados))
 
-
 @bp.route("/modelos/calcular", methods=["POST"])
 def calcular_meta():
     return jsonify(modelos_service.calcular_meta(request.form))
 
-@bp.route("/perdas", methods=["POST"])
+@bp.route("/calcular_perda", methods=["POST"])
 def calcular_perda():
-    return jsonify(modelos_service.calcular_perda(request.form))
+    meta_hora = float(request.form.get("meta_hora"))
+    producao_real = float(request.form.get("producao_real"))
+
+    resultado = calcular_perda_producao(meta_hora, producao_real)
+
+    return jsonify({"resultado": resultado})
+
 
