@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
   <div class="card shadow-sm p-4">
-    <h5 class="mb-4"><i class="bi bi-exclamation-triangle text-success"></i> Perda de Produção</h5>
+    <h5 class="mb-4"><i class="bi bi-exclamation-triangle text-danger"></i> Perda de Produção</h5>
 
 <div class="card p-4">
   <form id="perdaForm" class="row g-3">
@@ -35,17 +35,6 @@
   ⏱️ Perda de produção: {{ resultado }}
 </div>
 {% endif %}
-
-<!--
-<script>
-document.getElementById('perdaForm').addEventListener('submit', async e => {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const resp = await fetch('/api/calcular_perda', {method:'POST', body: fd});
-  const data = await resp.json();
-  document.getElementById('resultadoPerda').innerHTML = data.resultado;
-});
-</script>-->
 
 <script>
 document.getElementById('perdaForm').addEventListener('submit', async e => {
