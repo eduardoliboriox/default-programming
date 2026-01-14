@@ -67,7 +67,37 @@
       </main>
 
     </div>
+    
   </div>
+
+  <!-- NAV MOBILE (somente celular) -->
+<nav class="nav-mobile d-md-none">
+  <a href="{{ url_for('pages.dashboard') }}" class="nav-item">
+    <i class="bi bi-speedometer2"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="{{ url_for('pages.cadastro') }}" class="nav-item">
+    <i class="bi bi-plus-square"></i>
+    <span>Cadastrar</span>
+  </a>
+
+  <a href="{{ url_for('pages.modelos') }}" class="nav-item">
+    <i class="bi bi-table"></i>
+    <span>Modelos</span>
+  </a>
+
+  <a href="{{ url_for('pages.calculo') }}" class="nav-item">
+    <i class="bi bi-calculator"></i>
+    <span>Meta</span>
+  </a>
+
+  <a href="{{ url_for('pages.perdas') }}" class="nav-item">
+    <i class="bi bi-exclamation-triangle"></i>
+    <span>Perda</span>
+  </a>
+</nav>
+
 
   <!-- SCRIPTS -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -60,3 +60,55 @@ body {
       opacity: 1 !important;
   }
 }
+
+/* ===========================
+   NAV MOBILE (ESTILO SPOTIFY)
+=========================== */
+.nav-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: var(--card);
+  border-top: 1px solid rgba(0,0,0,0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1100;
+}
+
+.nav-mobile .nav-item {
+  flex: 1;
+  text-align: center;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-mobile .nav-item i {
+  font-size: 18px;
+}
+
+.nav-mobile .nav-item.active,
+.nav-mobile .nav-item:hover {
+  color: #0d6efd;
+}
+
+/* Espaço extra no conteúdo para não ficar atrás do menu */
+@media (max-width: 767px) {
+  main {
+    padding-bottom: 80px;
+  }
+}
+
+@media(max-width: 767px){
+  .sidebar {
+    display: none;
+  }
+}
+
