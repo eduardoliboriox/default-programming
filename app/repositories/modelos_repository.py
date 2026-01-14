@@ -1,14 +1,14 @@
-from app.extensions import get_conn
+from app.extensions import get_db
 
 def listar_codigos():
-    with get_conn() as conn:
+    with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT codigo FROM modelos ORDER BY codigo")
             return [r["codigo"] for r in cur.fetchall()]
 
 
 def listar_modelos():
-    with get_conn() as conn:
+    with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT codigo, cliente, setor, meta_padrao, pessoas_padrao
@@ -19,7 +19,7 @@ def listar_modelos():
 
 
 def inserir(dados):
-    with get_conn() as conn:
+    with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
                 INSERT INTO modelos

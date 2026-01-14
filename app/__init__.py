@@ -1,7 +1,9 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask
 from .config import Config
 from .routes import pages, api
-from .extensions import get_db
 
 def create_app():
     app = Flask(__name__)
@@ -29,3 +31,6 @@ def criar_tabelas(app):
                         pessoas_padrao INTEGER
                     )
                 """)
+
+# 🔽 ESSENCIAL PARA GUNICORN
+app = create_app()
