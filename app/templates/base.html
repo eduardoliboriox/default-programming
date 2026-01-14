@@ -59,11 +59,39 @@
 
 <!-- ================= BOTTOM NAV MOBILE ================= -->
 <nav class="bottom-nav d-md-none">
-  <a href="{{ url_for('pages.dashboard') }}"><i class="bi bi-house"></i></a>
-  <a href="{{ url_for('pages.modelos') }}"><i class="bi bi-table"></i></a>
-  <a href="{{ url_for('pages.cadastro') }}"><i class="bi bi-plus-circle"></i></a>
-  <a href="{{ url_for('pages.calculo') }}"><i class="bi bi-calculator"></i></a>
+  <a href="{{ url_for('pages.dashboard') }}" class="bottom-item">
+    <i class="bi bi-house bottom-icon"></i>
+    <small>Início</small>
+  </a>
+
+  <a href="{{ url_for('pages.modelos') }}" class="bottom-item">
+    <i class="bi bi-table bottom-icon"></i>
+    <small>Modelos</small>
+  </a>
+
+  <a href="{{ url_for('pages.cadastro') }}" class="bottom-item">
+    <i class="bi bi-plus-circle bottom-icon"></i>
+    <small>Novo</small>
+  </a>
+
+  <a href="{{ url_for('pages.calculo') }}" class="bottom-item">
+    <i class="bi bi-calculator bottom-icon"></i>
+    <small>Calcular</small>
+  </a>
+
+  <a href="{{ url_for('pages.perdas') }}" class="bottom-item">
+    <i class="bi bi-exclamation-triangle bottom-icon"></i>
+    <small>Perdas</small>
+  </a>
 </nav>
+
+<script>
+  document.querySelectorAll('.bottom-item').forEach(link => {
+    if (link.href === window.location.href) {
+      link.classList.add('active')
+    }
+  })
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
