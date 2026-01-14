@@ -29,5 +29,4 @@ def criar_tabelas(app):
                     )
                 """)
 
-# 🔽 ESSENCIAL PARA GUNICORN
 app = create_app()
