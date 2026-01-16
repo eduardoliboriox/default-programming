@@ -10,7 +10,7 @@ def listar_modelos():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT codigo, cliente, setor, meta_padrao, pessoas_padrao
+                SELECT codigo, cliente, setor, meta, fase
                 FROM modelos
                 ORDER BY codigo
             """)
@@ -20,26 +20,12 @@ def inserir(dados):
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO modelos
-                (codigo, cliente, setor, meta_padrao, pessoas_padrao)
+                INSERT INTO modelos (codigo, cliente, setor, meta, fase)
                 VALUES (%s, %s, %s, %s, %s)
             """, (
                 dados["codigo"],
                 dados["cliente"],
                 dados["setor"],
                 dados["meta"],
-                dados["pessoas"]
+                dados["fase"]
             ))
-
-def excluir(codigo):
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute(
-        "DELETE FROM modelos WHERE codigo = %s",
-        (codigo,)
-    )
-
-    conn.commit()
-    cur.close()
-    conn.close()

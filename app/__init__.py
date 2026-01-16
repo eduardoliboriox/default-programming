@@ -22,11 +22,11 @@ def criar_tabelas(app):
                     CREATE TABLE IF NOT EXISTS modelos (
                         id SERIAL PRIMARY KEY,
                         codigo TEXT UNIQUE NOT NULL,
-                        cliente TEXT,
-                        setor TEXT,
-                        meta_padrao NUMERIC,
-                        pessoas_padrao INTEGER
-                    )
+                        cliente TEXT NOT NULL,
+                        setor TEXT NOT NULL,
+                        meta NUMERIC NOT NULL,
+                        fase TEXT NOT NULL
+                    );
                 """)
 
 app = create_app()
