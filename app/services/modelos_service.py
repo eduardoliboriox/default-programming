@@ -163,14 +163,16 @@ def calculo_rapido(meta_hora, minutos, blank=None):
 
 def atualizar_modelo(dados):
     codigo = dados["codigo"]
-
     campos = {}
 
     if dados.get("meta_padrao"):
-        campos["meta_padrao"] = dados["meta_padrao"]
+        campos["meta_padrao"] = float(dados["meta_padrao"])
 
     if dados.get("tempo_montagem"):
-        campos["tempo_montagem"] = dados["tempo_montagem"]
+        campos["tempo_montagem"] = float(dados["tempo_montagem"])
+
+    if dados.get("blank"):
+        campos["blank"] = int(dados["blank"])
 
     if dados.get("novo_codigo"):
         campos["codigo"] = dados["novo_codigo"]
@@ -180,5 +182,7 @@ def atualizar_modelo(dados):
 
     modelos_repository.atualizar(codigo, campos)
     return {"sucesso": True}
+
+
 
 
