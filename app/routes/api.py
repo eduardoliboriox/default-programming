@@ -8,6 +8,11 @@ bp = Blueprint("api", __name__)
 def listar():
     return jsonify(modelos_service.listar())
 
+@bp.route("/modelos", methods=["PUT"])
+def atualizar():
+    return jsonify(modelos_service.atualizar_modelo(request.form))
+
+
 @bp.route("/modelos", methods=["POST"])
 def cadastrar():
     dados = request.form

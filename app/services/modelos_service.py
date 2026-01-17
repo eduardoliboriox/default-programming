@@ -154,5 +154,13 @@ def calculo_rapido(meta_hora, minutos, blank=None):
         "placas_reais": blanks * blank
     }
 
+def atualizar_modelo(dados):
+    codigo = dados.get("codigo")
+    nova_meta = dados.get("nova_meta")
 
+    if not codigo or not nova_meta:
+        return {"sucesso": False, "mensagem": "Dados incompletos"}
+
+    modelos_repository.atualizar_meta(codigo, nova_meta)
+    return {"sucesso": True}
 
