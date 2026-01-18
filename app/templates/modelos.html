@@ -7,21 +7,22 @@
 
   <div id="mensagemModelos"></div>
 
-  <!-- ===================== TABELA DE MODELOS ===================== -->
+  <!-- ===================== LISTA DE MODELOS ===================== -->
   <div class="card mb-4 p-3 shadow-sm">
-    <h5 class="mb-3 text-success"><i class="bi bi-table text-success"></i> Modelos Cadastrados</h5>
+    <h5 class="mb-3 text-success">
+      <i class="bi bi-table text-success"></i> Modelos Cadastrados
+    </h5>
 
-      <!-- 🔎 BUSCA RÁPIDA -->
-  <input
-    id="buscaModelo"
-    class="form-control mb-3"
-    placeholder="🔎 Buscar por código, cliente ou setor"
-  >
+    <input
+      id="buscaModelo"
+      class="form-control mb-3"
+      placeholder="🔎 Buscar por código, cliente ou setor"
+    >
+
     <div id="listaModelos" class="row g-3"></div>
-
   </div>
 
-<!-- ===================== EDITAR MODELO ===================== -->
+  <!-- ===================== EDITAR MODELO ===================== -->
   <div class="card mb-4 p-3 shadow-sm">
     <h5 class="mb-3 text-warning">
       <i class="bi bi-pencil-square"></i> Editar Modelo
@@ -30,36 +31,41 @@
     <form id="editarForm" class="row g-3">
 
       <div class="col-md-3">
-        <label class="form-label">Selecione o modelo</label>
-        <select class="form-select" name="codigo" id="selectEditar" required>
-          {% for c in codigos %}
-            <option value="{{ c }}">{{ c }}</option>
-          {% endfor %}
+        <label class="form-label">Cliente</label>
+        <select class="form-select" id="filtroCliente">
+          <option value="">Selecione</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Modelo (código + fase)</label>
+        <select class="form-select" name="modelo" id="selectEditar" required>
+          <option value="">Selecione o cliente primeiro</option>
         </select>
       </div>
 
       <div class="col-md-3">
         <label class="form-label">Nova Meta/Hora</label>
         <input class="form-control" name="meta_padrao" type="number" step="0.01"
-              placeholder="Deixe vazio para manter">
+               placeholder="Deixe vazio para manter">
       </div>
 
       <div class="col-md-3">
         <label class="form-label">Novo Tempo de Montagem (s)</label>
         <input class="form-control" name="tempo_montagem" type="number" step="0.01"
-              placeholder="Deixe vazio para manter">
+               placeholder="Deixe vazio para manter">
       </div>
 
       <div class="col-md-3">
         <label class="form-label">Placas por blank</label>
-        <input class="form-control" name="blank" type="number" step="1" min="1"
-              placeholder="Deixe vazio para manter">
-     </div>
+        <input class="form-control" name="blank" type="number" min="1"
+               placeholder="Deixe vazio para manter">
+      </div>
 
       <div class="col-md-3">
         <label class="form-label">Corrigir Código (opcional)</label>
         <input class="form-control" name="novo_codigo" type="text"
-              placeholder="Só se digitou errado">
+               placeholder="Só se digitou errado">
       </div>
 
       <div class="col-md-12">
@@ -69,23 +75,20 @@
     </form>
   </div>
 
-
   <!-- ===================== EXCLUIR MODELO ===================== -->
   <div class="card mb-4 p-3 shadow-sm">
-    <h5 class="mb-3 text-danger"><i class="bi bi-trash3"></i> Excluir Modelo</h5>
+    <h5 class="mb-3 text-danger">
+      <i class="bi bi-trash3"></i> Excluir Modelo
+    </h5>
+
     <form id="excluirForm" class="row g-3">
-      <div class="col-md-3">
-        <label class="form-label">Selecione o modelo</label>
-        <select class="form-select" name="codigo" id="selectExcluir" required>
-          {% for c in codigos %}
-          <option value="{{ m.codigo }}|{{ m.fase }}">
-              {{ m.codigo }} — {{ m.fase }}
-          </option>
-
-
-          {% endfor %}
+      <div class="col-md-4">
+        <label class="form-label">Modelo (código + fase)</label>
+        <select class="form-select" name="modelo" id="selectExcluir" required>
+          <option value="">Selecione</option>
         </select>
       </div>
+
       <div class="col-md-3 d-flex align-items-end">
         <button class="btn btn-danger w-100">Excluir</button>
       </div>
@@ -99,11 +102,15 @@
 <script>
 $(document).ready(function(){
 
-  // Inicializa DataTable
+  let modelosCache = [];
+
+  // ================= LISTAR MODELOS =================
   function carregarModelos() {
     fetch('/api/modelos')
-      .then(resp => resp.json())
+      .then(r => r.json())
       .then(data => {
+        modelosCache = data;
+
         const container = $('#listaModelos');
         container.empty();
 
@@ -123,85 +130,109 @@ $(document).ready(function(){
 
                 <div class="linha"><strong>Setor:</strong> ${m.setor}</div>
                 <div class="linha"><strong>Meta/hora:</strong> ${m.meta}</div>
-                <div class="linha"><strong>Tempo de montagem:</strong> ${m.tempo_montagem ?? '-'} s</div>
+                <div class="linha"><strong>Tempo de montagem:</strong> ${m.tempo_montagem ?? '-'}</div>
                 <div class="linha"><strong>Placas por blank:</strong> ${m.blank}</div>
                 <div class="linha"><strong>Fase:</strong> ${m.fase}</div>
               </div>
             </div>
           `);
         });
+
+        popularFiltros();
       });
   }
 
+  // ================= FILTROS =================
+  function popularFiltros() {
+    const clientes = [...new Set(modelosCache.map(m => m.cliente))];
+    const filtroCliente = $('#filtroCliente');
+    const selectExcluir = $('#selectExcluir');
 
-  carregarModelos();
+    filtroCliente.empty().append('<option value="">Selecione</option>');
+    clientes.forEach(c => filtroCliente.append(`<option value="${c}">${c}</option>`));
 
-
-  // Atualiza selects após ação
-  function atualizarSelects() {
-    fetch('/api/modelos')
-      .then(resp => resp.json())
-      .then(data => {
-        const editar = $('#selectEditar');
-        const excluir = $('#selectExcluir');
-
-        editar.empty();
-        excluir.empty();
-
-        data.forEach(d => {
-          editar.append(`<option>${d.codigo}</option>`);
-          excluir.append(`<option>${d.codigo}</option>`);
-        });
-      });
-  }
-
-  // Função para mostrar mensagens temporárias
-  function mostrarMensagem(texto, tipo='success') {
-      const div = $(`
-        <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
-          ${texto}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+    selectExcluir.empty().append('<option value="">Selecione</option>');
+    modelosCache.forEach(m => {
+      selectExcluir.append(`
+        <option value="${m.codigo}|${m.fase}">
+          ${m.codigo} — ${m.fase}
+        </option>
       `);
-      $('#mensagemModelos').html(div);
-      setTimeout(() => div.alert('close'), 2000); 
+    });
   }
 
-  // EDITAR
+  $('#filtroCliente').on('change', function(){
+    const cliente = $(this).val();
+    const selectEditar = $('#selectEditar');
+
+    selectEditar.empty();
+
+    modelosCache
+      .filter(m => m.cliente === cliente)
+      .forEach(m => {
+        selectEditar.append(`
+          <option value="${m.codigo}|${m.fase}">
+            ${m.codigo} — ${m.fase}
+          </option>
+        `);
+      });
+  });
+
+  // ================= MENSAGEM =================
+  function mostrarMensagem(texto, tipo='success') {
+    const div = $(`
+      <div class="alert alert-${tipo} alert-dismissible fade show">
+        ${texto}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    `);
+    $('#mensagemModelos').html(div);
+    setTimeout(() => div.alert('close'), 2000);
+  }
+
+  // ================= EDITAR =================
   $('#editarForm').on('submit', async function(e){
-      e.preventDefault();
-      const fd = new FormData(this);
-      const [codigo, fase] = fd.get("modelo").split("|");
-        fd.append("codigo", codigo);
-        fd.append("fase", fase);
-      await fetch('/api/modelos', {method:'PUT', body:fd});
-      mostrarMensagem('Modelo atualizado com sucesso!', 'success');
-      carregarModelos();
-      atualizarSelects();
+    e.preventDefault();
+
+    const fd = new FormData(this);
+    const [codigo, fase] = fd.get('modelo').split('|');
+
+    fd.append('codigo', codigo);
+    fd.append('fase', fase);
+    fd.delete('modelo');
+
+    await fetch('/api/modelos', { method:'PUT', body: fd });
+
+    mostrarMensagem('Modelo atualizado com sucesso!', 'success');
+    carregarModelos();
   });
 
-  // EXCLUIR
+  // ================= EXCLUIR =================
   $('#excluirForm').on('submit', async function(e){
-      e.preventDefault();
-      const fd = new FormData(this);
-      const [codigo, fase] = fd.get("modelo").split("|");
-        fd.append("codigo", codigo);
-        fd.append("fase", fase);
-      await fetch('/api/modelos', {method:'DELETE', body:fd});
-      mostrarMensagem('Modelo excluído com sucesso!', 'danger');
-      carregarModelos();
-      atualizarSelects();
+    e.preventDefault();
+
+    const fd = new FormData(this);
+    const [codigo, fase] = fd.get('modelo').split('|');
+
+    fd.append('codigo', codigo);
+    fd.append('fase', fase);
+    fd.delete('modelo');
+
+    await fetch('/api/modelos', { method:'DELETE', body: fd });
+
+    mostrarMensagem('Modelo excluído com sucesso!', 'danger');
+    carregarModelos();
   });
 
+  // ================= BUSCA =================
   $('#buscaModelo').on('input', function () {
     const termo = $(this).val().toLowerCase();
-
     $('#listaModelos .col-md-4').each(function () {
-      const texto = $(this).text().toLowerCase();
-      $(this).toggle(texto.includes(termo));
+      $(this).toggle($(this).text().toLowerCase().includes(termo));
     });
   });
 
+  carregarModelos();
 });
 </script>
 {% endblock %}
