@@ -34,7 +34,7 @@ def buscar_ultimo_modelo():
                 LIMIT 1
             """)
             row = cur.fetchone()
-            return row[0] if row else None
+            return row["codigo"] if row else None
 
 def inserir(dados):
     with get_db() as conn:
