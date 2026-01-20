@@ -1,23 +1,44 @@
 from app.extensions import get_db
 
-def resumo_dashboard():
+def resumo_dashboard(filtros):
+    where = []
+    params = []
+
+    if filtros.get("data"):
+        where.append("data = %s")
+        params.append(filtros["data"])
+
+    if filtros.get("turno"):
+        where.append("turno = %s")
+        params.append(filtros["turno"])
+
+    if filtros.get("filial"):
+        where.append("filial = %s")
+        params.append(filtros["filial"])
+
+    where_sql = " AND ".join(where)
+    if where_sql:
+        where_sql = "WHERE " + where_sql
+
+    query = f"""
+        SELECT
+            linha,
+            setor,
+            filial,
+            SUM(hc_padrao) AS hc_planejado,
+            SUM(hc_real)   AS hc_real
+        FROM lancamentos
+        {where_sql}
+        GROUP BY linha, setor, filial
+    """
+
     with get_db() as conn:
         with conn.cursor() as cur:
-            cur.execute("""
-                SELECT
-                    linha,
-                    SUM(hc_padrao) AS hc_planejado,
-                    SUM(hc_real)   AS hc_real
-                FROM lancamentos
-                WHERE data = CURRENT_DATE
-                GROUP BY linha
-                ORDER BY linha
-            """)
+            cur.execute(query, params)
             rows = cur.fetchall()
 
     dados = []
-    total_planejado = 0
-    total_real = 0
+    total_p = total_r = 0
 
     for r in rows:
         absenteismo = 0
@@ -28,38 +49,65 @@ def resumo_dashboard():
 
         status = "OK" if r["hc_real"] >= r["hc_planejado"] else "CRÍTICO"
 
-        item = {
+        dados.append({
             "nome": r["linha"],
+            "setor": r["setor"],
+            "filial": r["filial"],
             "hc_planejado": r["hc_planejado"],
             "hc_real": r["hc_real"],
             "absenteismo": absenteismo,
             "status": status
-        }
+        })
 
-        dados.append(item)
+        total_p += r["hc_planejado"]
+        total_r += r["hc_real"]
 
-        total_planejado += r["hc_planejado"]
-        total_real += r["hc_real"]
+    ranking_linhas = sorted(dados, key=lambda x: x["absenteismo"], reverse=True)
 
-    # 🔴 TOP LINHAS COM MAIS ABSENTEÍSMO
-    ranking_absenteismo = sorted(
-        dados,
+    # 🔴 Ranking por SETOR
+    ranking_setor = {}
+    for d in dados:
+        ranking_setor.setdefault(d["setor"], []).append(d)
+
+    ranking_setor = sorted(
+        [{
+            "nome": setor,
+            "absenteismo": round(
+                sum(i["absenteismo"] for i in itens) / len(itens), 2
+            )
+        } for setor, itens in ranking_setor.items()],
+        key=lambda x: x["absenteismo"],
+        reverse=True
+    )
+
+    # 🔵 Ranking por FILIAL
+    ranking_filial = {}
+    for d in dados:
+        ranking_filial.setdefault(d["filial"], []).append(d)
+
+    ranking_filial = sorted(
+        [{
+            "nome": filial,
+            "absenteismo": round(
+                sum(i["absenteismo"] for i in itens) / len(itens), 2
+            )
+        } for filial, itens in ranking_filial.items()],
         key=lambda x: x["absenteismo"],
         reverse=True
     )
 
     abs_total = 0
-    if total_planejado > 0:
-        abs_total = round(
-            (total_planejado - total_real) / total_planejado * 100, 2
-        )
+    if total_p > 0:
+        abs_total = round((total_p - total_r) / total_p * 100, 2)
 
     return {
         "dados": dados,
-        "ranking": ranking_absenteismo[:5],  # TOP 5 (padrão profissional)
+        "ranking_linhas": ranking_linhas[:5],
+        "ranking_setor": ranking_setor,
+        "ranking_filial": ranking_filial,
         "kpis": {
-            "hc_planejado": total_planejado,
-            "hc_real": total_real,
+            "hc_planejado": total_p,
+            "hc_real": total_r,
             "absenteismo": abs_total,
             "linhas": len(dados)
         }
