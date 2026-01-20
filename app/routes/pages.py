@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-from app.services.modelos_service import listar_codigos, resumo_dashboard
+from app.services.modelos_service import resumo_dashboard
 
 bp = Blueprint("pages", __name__)
 
@@ -11,12 +11,12 @@ def dashboard():
 
 @bp.route("/cadastro")
 def cadastro():
-    return render_template("cadastro.html", codigos=listar_codigos())
+    return render_template("cadastro.html", codigos=[])
 
 @bp.route("/modelos")
 def modelos():
-    return render_template("modelos.html", codigos=listar_codigos())
+    return render_template("modelos.html", modelos=[])
 
 @bp.route("/calculo")
 def calculo():
-    return render_template("calcular.html", codigos=listar_codigos())
+    return render_template("calcular.html")
