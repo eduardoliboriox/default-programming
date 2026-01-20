@@ -6,14 +6,13 @@ def resumo_dashboard():
             cur.execute("""
                 SELECT
                     linha,
-                    SUM(hc_padrao)   AS hc_planejado,
-                    SUM(hc_real)     AS hc_real
+                    SUM(hc_padrao) AS hc_planejado,
+                    SUM(hc_real)   AS hc_real
                 FROM lancamentos
                 WHERE data = CURRENT_DATE
                 GROUP BY linha
                 ORDER BY linha
             """)
-
             rows = cur.fetchall()
 
     dados = []
@@ -29,16 +28,25 @@ def resumo_dashboard():
 
         status = "OK" if r["hc_real"] >= r["hc_planejado"] else "CRÍTICO"
 
-        dados.append({
+        item = {
             "nome": r["linha"],
             "hc_planejado": r["hc_planejado"],
             "hc_real": r["hc_real"],
             "absenteismo": absenteismo,
             "status": status
-        })
+        }
+
+        dados.append(item)
 
         total_planejado += r["hc_planejado"]
         total_real += r["hc_real"]
+
+    # 🔴 TOP LINHAS COM MAIS ABSENTEÍSMO
+    ranking_absenteismo = sorted(
+        dados,
+        key=lambda x: x["absenteismo"],
+        reverse=True
+    )
 
     abs_total = 0
     if total_planejado > 0:
@@ -48,6 +56,7 @@ def resumo_dashboard():
 
     return {
         "dados": dados,
+        "ranking": ranking_absenteismo[:5],  # TOP 5 (padrão profissional)
         "kpis": {
             "hc_planejado": total_planejado,
             "hc_real": total_real,
