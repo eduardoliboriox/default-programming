@@ -6,6 +6,9 @@ def calcular_absenteismo(hc_padrao, hc_real):
     return round((hc_padrao - hc_real) / hc_padrao * 100, 2)
 
 def criar_lancamento(dados):
+    # transforma ImmutableMultiDict em dict normal
+    dados = dict(dados)
+
     absenteismo = calcular_absenteismo(
         int(dados["hc_padrao"]),
         int(dados["hc_real"])
@@ -19,3 +22,4 @@ def criar_lancamento(dados):
         "sucesso": True,
         "absenteismo": absenteismo
     }
+
