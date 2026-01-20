@@ -39,11 +39,23 @@
     </div>
 
     <nav>
-      <a href="{{ url_for('pages.dashboard') }}"><i class="bi bi-house"></i> Dashboard</a>
-      <a href="{{ url_for('pages.lancamento') }}"><i class="bi bi-plus-square"></i> Lançamentos</a>
-      <a href="{{ url_for('pages.modelos') }}"><i class="bi bi-table"></i> Modelos</a>
-      <a href="{{ url_for('pages.calculo') }}"><i class="bi bi-calculator"></i> Cálculos</a>
+      <a href="{{ url_for('pages.inicio') }}">
+        <i class="bi bi-house"></i> Início
+      </a>
+    
+      <a href="{{ url_for('pages.lancamento') }}">
+        <i class="bi bi-plus-square"></i> Lançamentos
+      </a>
+    
+      <a href="{{ url_for('pages.dashboard') }}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+    
+      <a href="{{ url_for('pages.cargos') }}">
+        <i class="bi bi-people"></i> Cargos
+      </a>
     </nav>
+
   </aside>
 
   <!-- MAIN -->
@@ -62,14 +74,10 @@
 
 <!-- ================= BOTTOM NAV MOBILE ================= -->
 <nav class="bottom-nav d-md-none">
-  <a href="{{ url_for('pages.dashboard') }}" class="bottom-item">
+
+  <a href="{{ url_for('pages.inicio') }}" class="bottom-item">
     <i class="bi bi-house bottom-icon"></i>
     <small>Início</small>
-  </a>
-
-  <a href="{{ url_for('pages.modelos') }}" class="bottom-item">
-    <i class="bi bi-table bottom-icon"></i>
-    <small>Modelos</small>
   </a>
 
   <a href="{{ url_for('pages.lancamento') }}" class="bottom-item">
@@ -77,13 +85,18 @@
     <small>Lançamento</small>
   </a>
 
-  <a href="{{ url_for('pages.calculo') }}" class="bottom-item">
-    <i class="bi bi-calculator bottom-icon"></i>
-    <small>Cálculos</small>
+  <a href="{{ url_for('pages.dashboard') }}" class="bottom-item">
+    <i class="bi bi-speedometer2 bottom-icon"></i>
+    <small>Dashboard</small>
   </a>
 
+  <a href="{{ url_for('pages.cargos') }}" class="bottom-item">
+    <i class="bi bi-people bottom-icon"></i>
+    <small>Cargos</small>
   </a>
+
 </nav>
+
 
 <script>
   document.querySelectorAll('.bottom-item').forEach(link => {
