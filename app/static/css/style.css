@@ -82,10 +82,13 @@ body {
 }
 
 .sidebar .logo img {
-  width: 82px;        
-  height: 82px;
+  width: auto;        
+  max-height: 120px;  
+  display: block;
+  margin: 0 auto;    
   object-fit: contain;
 }
+
 
 .sidebar nav a:hover,
 .sidebar nav a.active {
