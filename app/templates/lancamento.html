@@ -72,12 +72,21 @@
 
       <div class="col-md-6">
         <label class="form-label">Cargo</label>
-        <select id="cargo" class="form-select">
-          <option value="">Selecione</option>
-          {% for c in cargos %}
-            <option value="{{ c.id }}">{{ c.nome }}</option>
-          {% endfor %}
-        </select>
+            <select id="cargo" class="form-select">
+              <option value="">Selecione</option>
+            
+              <optgroup label="Área Técnica">
+                {% for c in cargos_tecnica %}
+                  <option value="{{ c.id }}">{{ c.nome }}</option>
+                {% endfor %}
+              </optgroup>
+            
+              <optgroup label="Produção">
+                {% for c in cargos_producao %}
+                  <option value="{{ c.id }}">{{ c.nome }}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
       </div>
 
       <div class="col-md-3">
