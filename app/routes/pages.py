@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard
 from datetime import date
+from app.services import cargos_service
 
 bp = Blueprint("pages", __name__)
 
@@ -36,11 +37,20 @@ def dashboard():
         **dados
     )
 
-@bp.route("/lancamento")
-def lancamento():
-    return render_template("lancamento.html", codigos=[])
-
 @bp.route("/cargos")
 def cargos():
-    return render_template("cargos.html", cargos=[])
+    lista = cargos_service.listar()
+    return render_template("cargos.html", cargos=lista)
+
+@bp.route("/lancamento")
+def lancamento():
+    cargos_tecnica = cargos_service.listar_por_area("TECNICA")
+    cargos_producao = cargos_service.listar_por_area("PRODUCAO")
+
+    return render_template(
+        "lancamento.html",
+        cargos_tecnica=cargos_tecnica,
+        cargos_producao=cargos_producao
+    )
+
 
