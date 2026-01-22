@@ -226,9 +226,8 @@ const linhasPorSetor = {
 const setorSelect = document.querySelector("select[name='setor']");
 const linhaSelect = document.getElementById("linhaSelect");
 
-setorSelect.addEventListener("change", () => {
+function atualizarLinhas() {
   const setor = setorSelect.value;
-
   linhaSelect.innerHTML = "";
 
   if (!linhasPorSetor[setor]) {
@@ -244,8 +243,13 @@ setorSelect.addEventListener("change", () => {
     opt.textContent = linha;
     linhaSelect.appendChild(opt);
   });
-});
-</script>
+}
 
+// 🔹 quando o usuário troca o setor
+setorSelect.addEventListener("change", atualizarLinhas);
+
+// 🔹 quando a página carrega (RESOLVE O BUG)
+document.addEventListener("DOMContentLoaded", atualizarLinhas);
+</script>
 
 {% endblock %}
