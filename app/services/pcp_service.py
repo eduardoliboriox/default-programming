@@ -107,6 +107,7 @@ def resumo_dashboard(filtros):
         "ranking_setor": ranking_setor,
         "ranking_filial": ranking_filial,
         "ranking_cargos": ranking_cargos(filtros), 
+        "ranking_linhas_ferias": ranking_linhas_ferias(filtros),
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,

@@ -90,3 +90,41 @@ def faltas_por_cargo_e_linha(linha, filtros):
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, params)
             return cur.fetchall()
+
+def ferias_por_linha(filtros):
+    where = []
+    params = []
+
+    if filtros.get("data_inicial") and filtros.get("data_final"):
+        where.append("l.data BETWEEN %s AND %s")
+        params += [filtros["data_inicial"], filtros["data_final"]]
+
+    if filtros.get("turno"):
+        where.append("l.turno = %s")
+        params.append(filtros["turno"])
+
+    if filtros.get("filial"):
+        where.append("l.filial = %s")
+        params.append(filtros["filial"])
+
+    where_sql = " AND ".join(where)
+    if where_sql:
+        where_sql = "AND " + where_sql
+
+    query = f"""
+        SELECT
+            l.linha,
+            SUM(lc.quantidade) AS total
+        FROM lancamentos_cargos lc
+        JOIN lancamentos l ON l.id = lc.lancamento_id
+        WHERE lc.tipo = 'FERIAS'
+        {where_sql}
+        GROUP BY l.linha
+        ORDER BY total DESC
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, params)
+            return cur.fetchall()
+

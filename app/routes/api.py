@@ -50,3 +50,18 @@ def cargos_por_linha_api():
 
     return jsonify(cargos_faltas_por_linha(linha, filtros))
 
+@bp.route("/dashboard/linha/ferias", methods=["GET"])
+def ferias_por_linha_api():
+    linha = request.args.get("linha")
+
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    return jsonify(
+        cargos_ferias_por_linha(linha, filtros)
+    )
+
