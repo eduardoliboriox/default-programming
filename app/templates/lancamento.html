@@ -35,10 +35,13 @@
       </select>
     </div>
 
-    <div class="col-md-3">
-      <label class="form-label">Linha</label>
-      <input name="linha" class="form-control" placeholder="IM-01" required>
-    </div>
+      <div class="col-md-3">
+        <label class="form-label">Linha</label>
+        <select name="linha" id="linhaSelect" class="form-select" required>
+          <option value="">Selecione o setor primeiro</option>
+        </select>
+      </div>
+
 
     <div class="col-md-3">
       <label class="form-label">Turno</label>
@@ -210,5 +213,39 @@ function atualizarHCReal(){
   document.querySelector("[name='hc_real']").value = Math.max(hcPadrao - totalFaltas, 0);
 }
 </script>
+
+<script>
+const linhasPorSetor = {
+  IM: ["IM-01","IM-02","IM-03","IM-04","IM-05","IM-06"],
+  PA: ["IP-COM","PA-01","PA-03","PA-04","PA-07","PA-08","PA-09","PA-13","WIFI"],
+  PTH: ["ADE-01","AXI-01","AXI-02","AXI-03","JUM-01","JUM-02","RAD-01","RAD-02","RAD-03","ROU-01","ROU-02","ROU-03"],
+  SMT: ["SMT-01","SMT-02","SMT-03","SMT-04","SMT-05","SMT-06","SMT-07","SMT-08","SMT-09"],
+  VTT: ["PA-12","PA-16","PA-17","PA-18","PA-19","PA-20"]
+};
+
+const setorSelect = document.querySelector("select[name='setor']");
+const linhaSelect = document.getElementById("linhaSelect");
+
+setorSelect.addEventListener("change", () => {
+  const setor = setorSelect.value;
+
+  linhaSelect.innerHTML = "";
+
+  if (!linhasPorSetor[setor]) {
+    linhaSelect.innerHTML = `<option value="">Selecione o setor primeiro</option>`;
+    return;
+  }
+
+  linhaSelect.innerHTML = `<option value="">Selecione</option>`;
+
+  linhasPorSetor[setor].forEach(linha => {
+    const opt = document.createElement("option");
+    opt.value = linha;
+    opt.textContent = linha;
+    linhaSelect.appendChild(opt);
+  });
+});
+</script>
+
 
 {% endblock %}
