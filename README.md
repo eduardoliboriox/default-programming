@@ -1,88 +1,116 @@
-# SMT Production Manager
+# Venttos – Factory Metrics
 
-**SMT Production Manager** é um sistema web desenvolvido para **engenharia e produção SMT**, com foco em **padronização de dados**, **cálculos de performance** e **apoio à definição de metas de produção**.
+**Venttos – Factory Metrics** é um sistema web desenvolvido para **engenharia, produção e PCP**, com foco em **controle de absenteísmo**, **análise de headcount**, **métricas operacionais** e **padronização de dados industriais**.
+
+O projeto foi pensado para uso real em fábrica, priorizando **simplicidade**, **consistência de dados**, **baixo erro operacional** e **arquitetura limpa**.
 
 ---
 
 ## 🎯 Finalidade
 
-* Cadastro de modelos SMT
-* Base de dados por modelo e fase
-* Definição de meta por hora
-* Quantidade por blank
-* Tempo padrão de montagem
-* Consulta rápida de metas já definidas
+* Lançamento diário de **absenteísmo por setor, linha e turno**
+* Cálculo automático de **HC real**
+* Registro de **faltas por cargo**
+* Dashboard com visão consolidada
+* Padronização de setores e linhas (sem digitação manual)
+* Base sólida para futuras análises de PCP e produtividade
 
 ---
 
-## 📊 Página de Cálculos
+## 🧠 Conceitos Importantes
 
-O sistema conta com uma página dedicada a cálculos produtivos, incluindo:
+* **Setor → Linha dependente** (select dinâmico)
+* Evita erros de digitação e dados inconsistentes
+* Regras de negócio isoladas em *services*
+* Acesso ao banco isolado em *repositories*
+* Rotas HTML separadas de rotas REST
 
-* ⏱️ Tempo para produzir **X unidades** (resultado em `hh:mm:ss`)
-* ⚙️ Cálculo do **tempo de montagem da máquina** (checagem de meta)
-* 🎯 Automação do cálculo de **meta por hora**
-* 🛠️ Ferramenta de **análise manual** (start / stop)
-* 📉 Cálculo de **perda de produção**
-* 📐 Cálculo automático de **meta por hora × minutos**, considerando fator blank
+Arquitetura inspirada em boas práticas de **DDD leve + Clean Architecture**.
+
+---
+
+## 📊 Funcionalidades Principais
+
+### 📌 Lançamento de Absenteísmo
+
+* Seleção de:
+
+  * Data
+  * Filial
+  * Setor
+  * Linha (dinâmica)
+  * Turno
+* Definição de **HC padrão**
+* Cálculo automático de **HC real**
+* Inclusão de faltas por cargo
+* Envio dos dados via API REST
+
+### 📊 Dashboard
+
+* Visualização consolidada dos lançamentos
+* Indicadores operacionais
+* Base para métricas futuras
 
 ---
 
 ## 📱 Plataforma
 
+* Interface responsiva
 * Desktop e mobile
-* Versão mobile com layout estilo **app nativo**
+* Layout mobile inspirado em **app nativo**
+* Sidebar no desktop com navegação destacada
 
 ---
 
 ## ☁️ Infraestrutura
 
-* Servidor em Cloud (**Railway**)
-* Sistema sempre online
+* Deploy em **Railway**
+* Banco de dados **PostgreSQL**
+* Variáveis de ambiente via `.env`
+* Pronto para CI/CD
 
 ---
 
-## 🔹 Estrutura do Projeto
+## 🧱 Estrutura do Projeto
 
 ```text
 project/
 ├─ app/
 │   ├─ __init__.py            # create_app()
 │   ├─ config.py              # Configurações / env
-│   ├─ extensions.py          # DB (psycopg, etc)
+│   ├─ extensions.py          # DB (psycopg)
 │   │
-│   ├─ routes/
-│   │   ├─ __init__.py        # Registro de blueprints
-│   │   ├─ pages.py           # Rotas HTML
-│   │   └─ api.py             # Rotas REST (JSON)
+│   ├─ repositories/          # Acesso ao banco (SQL)
+│   │   ├─ cargos_repository.py
+│   │   ├─ lancamentos_repository.py
+│   │   └─ modelos_repository.py
 │   │
 │   ├─ services/              # Regras de negócio
-│   │   ├─ __init__.py
+│   │   ├─ cargos_service.py
+│   │   ├─ lancamentos_service.py
 │   │   ├─ modelos_service.py
 │   │   └─ pcp_service.py
 │   │
-│   ├─ repositories/          # Acesso ao banco de dados
-│   │   ├─ __init__.py
-│   │   └─ modelos_repository.py
+│   ├─ routes/
+│   │   ├─ pages.py           # Rotas HTML
+│   │   └─ api.py             # Rotas REST (JSON)
 │   │
 │   ├─ templates/             # Jinja2
 │   │   ├─ base.html
-│   │   ├─ cadastro.html
-│   │   ├─ calcular.html
+│   │   ├─ inicio.html
 │   │   ├─ dashboard.html
-│   │   └─ modelos.html
+│   │   ├─ cargos.html
+│   │   └─ lancamento.html
 │   │
 │   └─ static/
-│       ├─ css/
-│       │   └─ style.css
+│       ├─ css/style.css
 │       ├─ js/
 │       │   ├─ main.js
 │       │   └─ pcp.js
 │       ├─ images/
-│       └─ fonts/
-│           └─ inter.woff2
+│       └─ fonts/inter.woff2
 │
-├─ migrations/                # Alembic / Flask-Migrate
+├─ migrations/                # Alembic (ainda não utilizado)
 ├─ tests/                     # pytest
 ├─ run.py                     # Entrypoint
 ├─ requirements.txt
@@ -97,41 +125,43 @@ project/
 
 ## ⚙️ Tecnologias Utilizadas
 
-* Python (Flask)
-* HTML5
-* CSS3
-* JavaScript (Vanilla)
+* Python 3
+* Flask
 * Jinja2
+* HTML5 / CSS3
+* JavaScript (Vanilla)
 * PostgreSQL
-* LocalStorage
+* Bootstrap 5
+* Railway
 
 ---
 
-## ▶️ Como Rodar o Projeto
+## ▶️ Como Rodar o Projeto Localmente
 
-### 1. Clonar o repositório
+### 1️⃣ Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
-cd seu-repositorio
+git clone https://github.com/seu-usuario/venttos-factory-metrics.git
+cd venttos-factory-metrics
 ```
 
-### 2. Criar e ativar o ambiente virtual
+### 2️⃣ Criar e ativar o ambiente virtual
 
 ```bash
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Linux / Mac
 ```
 
-### 3. Instalar as dependências
+### 3️⃣ Instalar dependências
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variáveis de ambiente
+### 4️⃣ Configurar variáveis de ambiente
 
-Crie um arquivo `.env` na raiz do projeto:
+Crie um arquivo `.env` na raiz:
 
 ```env
 FLASK_ENV=development
@@ -139,13 +169,13 @@ SECRET_KEY=supersecretkey
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
 ```
 
-### 5. Rodar a aplicação
+### 5️⃣ Executar a aplicação
 
 ```bash
 python run.py
 ```
 
-Acesse no navegador:
+Acesse:
 
 ```
 http://127.0.0.1:5000
@@ -155,22 +185,29 @@ http://127.0.0.1:5000
 
 ## 📌 Observações
 
-* O sistema não utiliza login
-* Dados temporários podem ser salvos localmente no navegador
-* Os modelos cadastrados são persistidos no banco de dados
-* Projeto ideal para uso em engenharia, produção ou controle pessoal
+* Não possui autenticação (por enquanto)
+* Foco em uso interno / industrial
+* Estrutura pronta para escalar
+* Código organizado para fácil manutenção
 
 ---
 
-## 🔗 Acesse a aplicação
+## 🚀 Deploy
 
-👉 **Link:**
-não disponivel
+* Deploy contínuo via **Railway**
+* Uso de `Procfile`
+* Banco PostgreSQL gerenciado
 
 ---
 
 ## 👨‍💻 Autor
 
 Desenvolvido por **Eduardo Libório**
+
 📧 [eduardosoleno@protonmail.com](mailto:eduardosoleno@protonmail.com)
 
+---
+
+## 📄 Licença
+
+Projeto de uso privado / interno.
