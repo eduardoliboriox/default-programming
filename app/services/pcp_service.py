@@ -1,5 +1,9 @@
 from psycopg.rows import dict_row
 from app.extensions import get_db
+from app.repositories.lancamentos_repository import ferias_por_linha
+
+def ranking_linhas_ferias(filtros):
+    return ferias_por_linha(filtros)
 
 def resumo_dashboard(filtros):
     where = []
