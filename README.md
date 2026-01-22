@@ -84,16 +84,16 @@ project/
 │   │   ├─ cargos_repository.py
 │   │   ├─ lancamentos_repository.py
 │   │   └─ modelos_repository.py
+│   │  
+│   ├─ routes/
+│   │   ├─ api.py             # Rotas REST (JSON)
+│   │   └─ pages.py           # Rotas HTML
 │   │
 │   ├─ services/              # Regras de negócio
 │   │   ├─ cargos_service.py
 │   │   ├─ lancamentos_service.py
 │   │   ├─ modelos_service.py
 │   │   └─ pcp_service.py
-│   │
-│   ├─ routes/
-│   │   ├─ pages.py           # Rotas HTML
-│   │   └─ api.py             # Rotas REST (JSON)
 │   │
 │   ├─ templates/             # Jinja2
 │   │   ├─ base.html
