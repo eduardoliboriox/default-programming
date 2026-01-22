@@ -34,7 +34,7 @@ def resumo_dashboard(filtros):
     """
 
     with get_db() as conn:
-        with conn.cursor(row_factory=dict_row) as cur:  # <--- aqui
+        with conn.cursor(row_factory=dict_row) as cur: 
             cur.execute(query, params)
             rows = cur.fetchall()
 
@@ -103,10 +103,10 @@ def resumo_dashboard(filtros):
 
     return {
         "dados": dados,
-        "ranking_linhas": ranking_linhas[:5],
+        "ranking_linhas": ranking_linhas, 
         "ranking_setor": ranking_setor,
         "ranking_filial": ranking_filial,
-        "ranking_cargos": ranking_cargos(filtros),  # <-- vai funcionar agora
+        "ranking_cargos": ranking_cargos(filtros), 
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,
