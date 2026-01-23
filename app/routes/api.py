@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.services import modelos_service, cargos_service
-from app.services.lancamentos_service import criar_lancamento, cargos_faltas_por_linha
-from app.repositories.lancamentos_repository import ferias_por_linha, ferias_por_cargo_e_linha
+from app.services.lancamentos_service import criar_lancamento, cargos_ferias_por_linha
 
 bp = Blueprint("api", __name__)
 
@@ -16,11 +15,6 @@ def cadastrar():
 @bp.route("/modelos", methods=["DELETE"])
 def excluir():
     return jsonify(modelos_service.excluir_modelo(request.form))
-
-@bp.route("/lancamentos", methods=["POST"])
-def api_criar_lancamento():
-    dados = request.form
-    return jsonify(criar_lancamento(dados))
 
 @bp.route("/cargos", methods=["GET"])
 def listar_cargos():
@@ -38,20 +32,10 @@ def atualizar_cargo():
 def excluir_cargo():
     return jsonify(cargos_service.excluir(request.form))
 
-@bp.route("/dashboard/linha/cargos", methods=["GET"])
-def cargos_por_linha_api():
-    linha = request.args.get("linha")
-
-    filtros = {
-        "data_inicial": request.args.get("data_inicial"),
-        "data_final": request.args.get("data_final"),
-        "turno": request.args.get("turno"),
-        "filial": request.args.get("filial")
-    }
-
-    return jsonify(cargos_faltas_por_linha(linha, filtros))
-
-from app.repositories.lancamentos_repository import ferias_cargos_por_linha
+@bp.route("/lancamentos", methods=["POST"])
+def api_criar_lancamento():
+    dados = request.form
+    return jsonify(criar_lancamento(dados))
 
 @bp.route("/dashboard/linha/ferias_cargos", methods=["GET"])
 def ferias_cargos_linha_api():
@@ -62,30 +46,4 @@ def ferias_cargos_linha_api():
         "turno": request.args.get("turno"),
         "filial": request.args.get("filial")
     }
-    return jsonify(ferias_cargos_por_linha(linha, filtros))
-
-
-def ferias_por_cargo_e_linha(linha, filtros):
-    where = ["l.linha = %s", "lc.tipo = 'FERIAS'"]
-    params = [linha]
-
-    if filtros.get("data_inicial"):
-        where.append("l.data BETWEEN %s AND %s")
-        params += [filtros["data_inicial"], filtros["data_final"]]
-
-    query = f"""
-        SELECT c.nome, SUM(lc.quantidade) AS total
-        FROM lancamentos_cargos lc
-        JOIN cargos c ON c.id = lc.cargo_id
-        JOIN lancamentos l ON l.id = lc.lancamento_id
-        WHERE {" AND ".join(where)}
-        GROUP BY c.nome
-        ORDER BY total DESC
-    """
-
-    with get_db() as conn:
-        with conn.cursor(row_factory=dict_row) as cur:
-            cur.execute(query, params)
-            return cur.fetchall()
-
-
+    return jsonify(cargos_ferias_por_linha(linha, filtros))
