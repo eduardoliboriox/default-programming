@@ -20,7 +20,7 @@ def inserir(d):
                 d.get("cliente"),
                 d["hc_padrao"],
                 d["hc_real"],
-                d.get("ferias", 0),
+                0,
                 d["absenteismo"]
             ))
         conn.commit()
@@ -45,7 +45,7 @@ def inserir_com_cargos(d, cargos):
                 d.get("cliente"),
                 d["hc_padrao"],
                 d["hc_real"],
-                d.get("ferias", 0),
+                0,
                 d["absenteismo"]
             ))
 
