@@ -27,10 +27,7 @@ def inserir_com_cargos(d, cargos):
                 ))
 
         conn.commit()
-
-from app.extensions import get_db
-from psycopg.rows import dict_row
-
+        
 def ferias_por_linha(filtros):
     """Retorna o ranking de férias por linha"""
     where = ["lc.tipo = 'FERIAS'"]
