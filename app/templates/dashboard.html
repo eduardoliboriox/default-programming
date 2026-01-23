@@ -210,8 +210,12 @@
               {% if loop.index > 5 %}d-none extra-ferias{% endif %}"
               style="cursor:pointer"
               onclick="abrirModalFerias('{{ l.linha }}')">
+              
+                <span>{{ l.linha }}</span>
                 <span class="badge bg-info">{{ l.total }}</span>
+              
               </li>
+
               {% endfor %}
             </ul>
           </div>
