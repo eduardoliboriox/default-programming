@@ -366,9 +366,10 @@ async function abrirModalLinha(linha) {
     total += c.total;
 
     lista.innerHTML += `
-      <li class="list-group-item d-flex justify-content-between">
-        ${c.nome}
-        <span class="badge bg-danger">${c.total}</span>
+    <li class="list-group-item d-flex justify-content-between"
+        style="cursor:pointer"
+        onclick="abrirModalLinha('{{ linha.nome }}')">
+
       </li>`;
   });
 

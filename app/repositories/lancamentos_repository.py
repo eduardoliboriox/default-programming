@@ -26,12 +26,14 @@ def inserir_com_cargos(d, cargos):
                     lancamento_id, c["cargo_id"], c["quantidade"], c["tipo"]
                 ))
 
-        conn.commit()
-        
-def ferias_por_linha(filtros):
-    """Retorna o ranking de férias por linha"""
-    where = ["lc.tipo = 'FERIAS'"]
-    params = []
+        conn.commit()  
+
+def cargos_por_linha(linha, tipo, filtros):
+    where = [
+        "l.linha = %s",
+        "lc.tipo = %s"
+    ]
+    params = [linha, tipo]
 
     if filtros.get("data_inicial") and filtros.get("data_final"):
         where.append("l.data BETWEEN %s AND %s")
@@ -46,17 +48,16 @@ def ferias_por_linha(filtros):
         params.append(filtros["filial"])
 
     where_sql = " AND ".join(where)
-    if where_sql:
-        where_sql = "WHERE " + where_sql
 
     query = f"""
         SELECT
-            l.linha,
+            c.nome,
             SUM(lc.quantidade) AS total
         FROM lancamentos_cargos lc
+        JOIN cargos c ON c.id = lc.cargo_id
         JOIN lancamentos l ON l.id = lc.lancamento_id
-        {where_sql}
-        GROUP BY l.linha
+        WHERE {where_sql}
+        GROUP BY c.nome
         ORDER BY total DESC
     """
 
