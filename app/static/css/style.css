@@ -293,3 +293,40 @@ body {
   }
 }
 
+/* =========================
+   HEADER DA PÁGINA (TÍTULO + BOTÕES)
+========================= */
+.page-header {
+  display: flex;
+  justify-content: space-between; /* Título à esquerda, botões à direita */
+  align-items: center;           /* Alinha verticalmente no centro */
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1); /* linha sutil abaixo */
+}
+
+.page-header .title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.page-header .btn-group {
+  display: flex;
+  gap: 8px; /* espaçamento entre os botões */
+}
+
+@media (max-width: 767px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .page-header .btn-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
