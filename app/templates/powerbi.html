@@ -20,6 +20,14 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="powerbi-wrapper
+     {% if kpis.ausencias > 0 %}
+       powerbi-danger
+     {% else %}
+       powerbi-success
+     {% endif %}">
+
 <div class="container-fluid">
 
 <form method="get" id="filtrosForm" class="mb-4">
@@ -168,6 +176,7 @@
 
 
 </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -203,4 +212,6 @@ document.querySelectorAll(".auto-submit").forEach(el => {
   });
 });
 </script>
+
+
 {% endblock %}
