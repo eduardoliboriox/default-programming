@@ -24,6 +24,18 @@
 
 {% block content %}
 <div class="container-fluid">
+
+    <!-- 🔹 Navegação rápida (somente mobile) -->
+  <div class="d-md-none mb-3">
+    <div class="d-flex gap-2 overflow-auto">
+      <a href="#ranking-setor" class="btn btn-sm btn-outline-danger">Setor</a>
+      <a href="#ranking-filial" class="btn btn-sm btn-outline-primary">Filial</a>
+      <a href="#ranking-cargos" class="btn btn-sm btn-outline-warning">Cargos</a>
+      <a href="#ferias" class="btn btn-sm btn-outline-info">Férias</a>
+      <a href="#absenteismo" class="btn btn-sm btn-outline-danger">Absenteísmo</a>
+    </div>
+  </div>
+
   <form method="get" class="row g-3 mb-4">
     <div class="col-md-3">
       <label class="form-label">Data Inicial</label>
@@ -68,17 +80,6 @@
       </button>
     </div>
   </form>
-  
-<!-- 🔹 Navegação rápida (somente mobile) -->
-<div class="d-md-none mb-3">
-  <div class="d-flex gap-2 overflow-auto">
-    <a href="#ranking-setor" class="btn btn-sm btn-outline-danger">Setor</a>
-    <a href="#ranking-filial" class="btn btn-sm btn-outline-primary">Filial</a>
-    <a href="#ranking-cargos" class="btn btn-sm btn-outline-warning">Cargos</a>
-    <a href="#ferias" class="btn btn-sm btn-outline-info">Férias</a>
-    <a href="#absenteismo" class="btn btn-sm btn-outline-danger">Absenteísmo</a>
-  </div>
-</div>
 
   <!-- KPIs -->
   <div class="row g-3 mb-4">
