@@ -50,7 +50,7 @@
     </a>
   
     <a href="{{ url_for('pages.dashboard') }}"
-       class="{% if request.endpoint == 'pages.dashboard' %}active{% endif %}">
+       class="{% if active_menu == 'dashboard' %}active{% endif %}">
       <i class="bi bi-speedometer2"></i> Dashboard
     </a>
   
