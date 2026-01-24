@@ -113,6 +113,8 @@ def resumo_dashboard(filtros):
     if total_p > 0:
         abs_total = round((total_p - total_r) / total_p * 100, 2)
 
+    ausencias = max(total_p - total_r, 0)
+
     return {
         "dados": dados,
         "ranking_linhas": ranking_linhas, 
@@ -120,10 +122,7 @@ def resumo_dashboard(filtros):
         "ranking_filial": ranking_filial,
         "ranking_cargos": ranking_cargos(filtros), 
         "ranking_linhas_ferias": ranking_linhas_ferias(filtros),
-        "ranking_linhas_faltas": ranking_linhas_faltas(filtros),
-        
-        ausencias = max(total_p - total_r, 0)
-        
+        "ranking_linhas_faltas": ranking_linhas_faltas(filtros),      
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,
