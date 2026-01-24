@@ -292,3 +292,13 @@ body {
     font-size: 1.05rem; /* texto acompanha o checkbox */
   }
 }
+
+/* Mobile – evitar conflito de touch em navegação horizontal */
+.nav-mobile-scroll {
+  display: flex;
+  gap: .5rem;
+  overflow-x: auto;
+  padding-bottom: .25rem;
+  touch-action: pan-x;
+}
+
