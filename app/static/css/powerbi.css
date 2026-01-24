@@ -131,3 +131,57 @@
   white-space: nowrap;
 }
 
+/* ===============================
+   POWER BI PAGE – EXECUTIVE VIEW
+   =============================== */
+
+.powerbi-wrapper {
+  background-color: #0b1e33;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 3px solid transparent;
+}
+
+/* Borda dinâmica */
+.powerbi-wrapper.powerbi-danger {
+  border-color: #dc3545;
+}
+
+.powerbi-wrapper.powerbi-success {
+  border-color: #198754;
+}
+
+/* Tipografia branca */
+.powerbi-wrapper h1,
+.powerbi-wrapper h2,
+.powerbi-wrapper h3,
+.powerbi-wrapper h4,
+.powerbi-wrapper h5,
+.powerbi-wrapper h6,
+.powerbi-wrapper p,
+.powerbi-wrapper small,
+.powerbi-wrapper label,
+.powerbi-wrapper span {
+  color: #ffffff;
+}
+
+/* Cards permanecem claros */
+.powerbi-wrapper .card {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+/* Listas */
+.powerbi-wrapper .list-group-item {
+  background-color: #ffffff;
+  color: #212529;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .powerbi-wrapper {
+    padding: 1rem;
+    border-width: 2px;
+  }
+}
+
