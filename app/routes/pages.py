@@ -71,6 +71,23 @@ def relatorios():
 
 @bp.route("/powerbi")
 def powerbi():
-    return render_template("powerbi.html", active_menu="dashboard")
+    hoje = date.today().isoformat()
+
+    filtros = {
+        "data_inicial": hoje,
+        "data_final": hoje,
+        "turno": None,
+        "filial": None
+    }
+
+    dados = resumo_dashboard(filtros)
+
+    return render_template(
+        "powerbi.html",
+        filtros=filtros,
+        active_menu="dashboard",
+        **dados
+    )
+
 
 
