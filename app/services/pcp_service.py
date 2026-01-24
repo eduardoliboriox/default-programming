@@ -120,6 +120,7 @@ def resumo_dashboard(filtros):
         "ranking_filial": ranking_filial,
         "ranking_cargos": ranking_cargos(filtros), 
         "ranking_linhas_ferias": ranking_linhas_ferias(filtros),
+        "ranking_linhas_faltas": ranking_linhas_faltas(filtros),
         "kpis": {
             "hc_planejado": total_p,
             "hc_real": total_r,
@@ -151,6 +152,44 @@ def ranking_cargos(filtros):
         {where_sql}
         GROUP BY c.nome
         ORDER BY total DESC
+    """
+
+    with get_db() as conn:
+        with conn.cursor(row_factory=dict_row) as cur:
+            cur.execute(query, params)
+            return cur.fetchall()
+
+
+def ranking_linhas_faltas(filtros):
+    where = []
+    params = []
+
+    if filtros.get("data_inicial") and filtros.get("data_final"):
+        where.append("l.data BETWEEN %s AND %s")
+        params += [filtros["data_inicial"], filtros["data_final"]]
+
+    if filtros.get("turno"):
+        where.append("l.turno = %s")
+        params.append(filtros["turno"])
+
+    if filtros.get("filial"):
+        where.append("l.filial = %s")
+        params.append(filtros["filial"])
+
+    where_sql = " AND ".join(where)
+    if where_sql:
+        where_sql = "WHERE " + where_sql
+
+    query = f"""
+        SELECT
+            l.linha,
+            SUM(lc.quantidade) AS total_faltas
+        FROM lancamentos_cargos lc
+        JOIN lancamentos l ON l.id = lc.lancamento_id
+        WHERE lc.tipo = 'FALTA'
+        {"AND " + where_sql[6:] if where_sql else ""}
+        GROUP BY l.linha
+        ORDER BY total_faltas DESC
     """
 
     with get_db() as conn:
