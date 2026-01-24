@@ -7,7 +7,7 @@ from app.services.lancamentos_service import (
     ferias_por_linha_cargos
 )
 from app.services.pcp_service import ranking_linhas_ferias
-
+from app.services.atestados_service import registrar_atestado
 
 bp = Blueprint("api", __name__)
 
@@ -103,3 +103,8 @@ def api_ferias_linha_cargos():
     }
     linha = request.args.get("linha")
     return jsonify(ferias_por_linha_cargos(linha, filtros))
+
+@bp.route("/atestados", methods=["POST"])
+def api_atestado():
+    return jsonify(registrar_atestado(request.form))
+

@@ -150,6 +150,49 @@
 </form>
 
 <div id="msgLancamento" class="mt-3"></div>
+
+<hr class="my-4">
+
+<h6 class="fw-bold">Atestado / Abono</h6>
+
+<div class="row g-3">
+
+  <div class="col-md-3">
+    <label class="form-label">Matrícula</label>
+    <input type="text" name="matricula_atestado" class="form-control">
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Cargo</label>
+    <select name="cargo_atestado" class="form-select">
+      {% for c in cargos_tecnica + cargos_producao %}
+        <option value="{{ c.id }}">{{ c.nome }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Tipo</label>
+    <select name="tipo_atestado" class="form-select">
+      <option value="ATESTADO">Atestado</option>
+      <option value="ABONO">Abono</option>
+    </select>
+  </div>
+
+  <div class="col-md-3">
+    <label class="form-label">Senha</label>
+    <input type="password" name="senha_atestado" class="form-control">
+  </div>
+
+  <div class="col-md-12">
+    <button type="button"
+            class="btn btn-warning w-100"
+            onclick="salvarAtestado()">
+      Registrar Atestado / Abono
+    </button>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
