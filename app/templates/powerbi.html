@@ -22,74 +22,89 @@
 {% block content %}
 <div class="container-fluid">
 
-  <!-- HEADER -->
-  <div class="d-flex align-items-center mb-4 gap-4">
-    <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
-         style="height:70px">
+  <!-- HEADER / FILTROS -->
+  <form method="get">
+    <div class="d-flex align-items-center mb-4 gap-4">
+      <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
+           style="height:70px">
 
-    <div class="row w-100 g-2">
-      <!-- FILIAL -->
-      <div class="col">
-        <label>Filial</label>
-        <select class="form-select">
-          <option>Todas</option>
-          <option>VTE</option>
-          <option>VTT</option>
-        </select>
-      </div>
+      <div class="row w-100 g-2">
 
-      <!-- SETOR -->
-      <div class="col">
-        <label>Setor</label>
-        <select class="form-select" id="setorSelect">
-          <option>Todos</option>
-          <option>IM</option>
-          <option>PA</option>
-          <option>SMT</option>
-          <option>PTH</option>
-          <option>VTT</option>
-        </select>
-      </div>
+        <!-- FILIAL -->
+        <div class="col">
+          <label>Filial</label>
+          <select class="form-select" name="filial">
+            <option value="">Todas</option>
+            <option value="VTE" {% if filtros.filial == 'VTE' %}selected{% endif %}>VTE</option>
+            <option value="VTT" {% if filtros.filial == 'VTT' %}selected{% endif %}>VTT</option>
+          </select>
+        </div>
 
-      <!-- TURNO -->
-      <div class="col">
-        <label>Turno</label>
-        <select class="form-select">
-          <option>Todos</option>
-          <option>1T</option>
-          <option>2T</option>
-          <option>3T</option>
-        </select>
-      </div>
+        <!-- SETOR -->
+        <div class="col">
+          <label>Setor</label>
+          <select class="form-select" id="setorSelect" name="setor">
+            <option value="">Todos</option>
+            <option value="IM"  {% if filtros.setor == 'IM' %}selected{% endif %}>IM</option>
+            <option value="PA"  {% if filtros.setor == 'PA' %}selected{% endif %}>PA</option>
+            <option value="SMT" {% if filtros.setor == 'SMT' %}selected{% endif %}>SMT</option>
+            <option value="PTH" {% if filtros.setor == 'PTH' %}selected{% endif %}>PTH</option>
+            <option value="VTT" {% if filtros.setor == 'VTT' %}selected{% endif %}>VTT</option>
+          </select>
+        </div>
 
-      <!-- LINHA -->
-      <div class="col">
-        <label>Linha</label>
-        <select class="form-select" id="linhaSelect">
-          <option>Todas</option>
-        </select>
-      </div>
+        <!-- TURNO -->
+        <div class="col">
+          <label>Turno</label>
+          <select class="form-select" name="turno">
+            <option value="">Todos</option>
+            <option value="1T" {% if filtros.turno == '1T' %}selected{% endif %}>1T</option>
+            <option value="2T" {% if filtros.turno == '2T' %}selected{% endif %}>2T</option>
+            <option value="3T" {% if filtros.turno == '3T' %}selected{% endif %}>3T</option>
+          </select>
+        </div>
 
-      <!-- PERÍODO -->
-      <div class="col">
-        <label>Data Inicial</label>
-        <input type="date" class="form-control" value="{{ filtros.data_inicial }}">
-      </div>
+        <!-- LINHA -->
+        <div class="col">
+          <label>Linha</label>
+          <select class="form-select" id="linhaSelect" name="linha">
+            <option value="">Todas</option>
+          </select>
+        </div>
 
-      <div class="col">
-        <label>Data Final</label>
-        <input type="date" class="form-control" value="{{ filtros.data_final }}">
+        <!-- PERÍODO -->
+        <div class="col">
+          <label>Data Inicial</label>
+          <input type="date"
+                 class="form-control"
+                 name="data_inicial"
+                 value="{{ filtros.data_inicial }}">
+        </div>
+
+        <div class="col">
+          <label>Data Final</label>
+          <input type="date"
+                 class="form-control"
+                 name="data_final"
+                 value="{{ filtros.data_final }}">
+        </div>
+
       </div>
     </div>
-  </div>
+
+    <!-- botão invisível para submit -->
+    <button type="submit" class="d-none"></button>
+  </form>
 
   <!-- KPIs -->
   <div class="row g-3 mb-4 text-center">
-    {% for k,v in kpis.items() %}
+    {% for k, v in kpis.items() %}
     <div class="col-md-3">
       <div class="card shadow-sm p-3">
         <small class="text-muted">{{ k|replace('_',' ')|title }}</small>
-        <h2 class="fw-bold">{{ v }}{% if k == 'absenteismo' %}%{% endif %}</h2>
+        <h2 class="fw-bold">
+          {{ v }}{% if k == 'absenteismo' %}%{% endif %}
+        </h2>
       </div>
     </div>
     {% endfor %}
