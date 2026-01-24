@@ -185,3 +185,14 @@
   }
 }
 
+/* KPIs – garantir leitura em cards brancos */
+.powerbi-wrapper .card small,
+.powerbi-wrapper .card h4 {
+  color: #212529 !important;
+}
+
+/* Ranking – labels das linhas */
+.powerbi-wrapper .card small.d-block {
+  color: #212529 !important;
+}
+
