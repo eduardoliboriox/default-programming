@@ -150,27 +150,51 @@
   <div class="d-flex align-items-end gap-3" style="height:220px">
     {% for l in ranking_faltas_powerbi %}
       <div class="text-center" style="width:60px">
-  
+
         <!-- valor -->
         <div class="fw-bold small mb-1">
           {{ l.faltas }}
         </div>
-  
-        <!-- coluna -->
+
+        <!-- coluna clicável -->
         <div
           style="
             height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
             background-color: {{ '#dc3545' if l.status == 'CRITICO' else '#198754' }};
             border-radius: 6px;
-          ">
+            cursor: pointer;
+          "
+          onclick="abrirModalLinha('{{ l.linha }}')">
         </div>
-  
+
         <!-- label -->
         <small class="d-block mt-1">{{ l.linha }}</small>
       </div>
     {% endfor %}
   </div>
 </div>
+
+<!-- Modal de Faltas (já existe, não precisa duplicar) -->
+<div class="modal fade" id="modalLinha" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow">
+
+      <div class="modal-header">
+        <h6 class="modal-title" id="modalLinhaTitulo"></h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-2">
+        <ul class="list-group list-group-flush" id="modalLista"></ul>
+        <div class="mt-2 text-end fw-bold">
+          Total: <span id="modalTotal">0</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 
 </div>
 </div>
