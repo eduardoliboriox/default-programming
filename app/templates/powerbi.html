@@ -20,7 +20,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="powerbi-wrapper
      {% if kpis.ausencias > 0 %}
        powerbi-danger
@@ -31,7 +30,6 @@
 <div class="container-fluid">
 
 <form method="get" id="filtrosForm" class="mb-4">
-
   <!-- HEADER -->
   <div class="d-flex align-items-center gap-4 flex-wrap">
     <img src="{{ url_for('static', filename='images/logos/powerbi-logo.png') }}"
@@ -39,7 +37,6 @@
      class="powerbi-logo">
 
     <div class="row g-2 flex-grow-1">
-
       <!-- FILIAL -->
       <div class="col-md">
         <label>Filial</label>
@@ -97,7 +94,6 @@
                class="form-control auto-submit"
                value="{{ filtros.data_final }}">
       </div>
-
     </div>
   </div>
 </form>
@@ -105,96 +101,56 @@
 <!-- KPIs -->
 <div class="row g-3 mb-4 text-center">
   <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>HC Planejado</small>
-      <h4>{{ kpis.hc_planejado }}</h4>
-    </div>
+    <div class="card shadow-sm p-3"><small>HC Planejado</small><h4>{{ kpis.hc_planejado }}</h4></div>
   </div>
-
   <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>HC Real</small>
-      <h4>{{ kpis.hc_real }}</h4>
-    </div>
+    <div class="card shadow-sm p-3"><small>HC Real</small><h4>{{ kpis.hc_real }}</h4></div>
   </div>
-
   <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>Ausências</small>
-      <h4 class="text-danger">{{ kpis.ausencias }}</h4>
-    </div>
+    <div class="card shadow-sm p-3"><small>Ausências</small><h4 class="text-danger">{{ kpis.ausencias }}</h4></div>
   </div>
-
   <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>Absenteísmo Geral</small>
-      <h4>{{ kpis.absenteismo }}%</h4>
-    </div>
+    <div class="card shadow-sm p-3"><small>Absenteísmo Geral</small><h4>{{ kpis.absenteismo }}%</h4></div>
   </div>
-
   <div class="col-md-2">
-    <div class="card shadow-sm p-3">
-      <small>Linhas Ativas</small>
-      <h4>{{ kpis.linhas }}</h4>
-    </div>
+    <div class="card shadow-sm p-3"><small>Linhas Ativas</small><h4>{{ kpis.linhas }}</h4></div>
   </div>
 </div>
 
-<!-- ================= RANKING DE LINHAS POR ABSENTEÍSMO ================= -->
+<!-- Ranking linhas por faltas -->
 <div class="card shadow-sm p-3 mt-4">
-  <h6 class="fw-bold text-danger mb-3">
-    <i class="bi bi-bar-chart"></i>
-    Ranking de linhas por faltas
-  </h6>
-
+  <h6 class="fw-bold text-danger mb-3"><i class="bi bi-bar-chart"></i> Ranking de linhas por faltas</h6>
   <div class="d-flex align-items-end gap-3" style="height:220px">
     {% for l in ranking_faltas_powerbi %}
       <div class="text-center" style="width:60px">
-
-        <!-- valor -->
-        <div class="fw-bold small mb-1">
-          {{ l.faltas }}
-        </div>
-
-        <!-- coluna clicável -->
-        <div
-          style="
-            height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
-            background-color: {{ '#dc3545' if l.status == 'CRITICO' else '#198754' }};
-            border-radius: 6px;
-            cursor: pointer;
-          "
-          onclick="abrirModalLinha('{{ l.linha }}')">
-        </div>
-
-        <!-- label -->
+        <div class="fw-bold small mb-1">{{ l.faltas }}</div>
+        <div style="height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
+                    background-color: {{ '#dc3545' if l.status == 'CRITICO' else '#198754' }};
+                    border-radius: 6px; cursor: pointer;"
+             onclick="abrirModalLinha('{{ l.linha }}')"></div>
         <small class="d-block mt-1">{{ l.linha }}</small>
       </div>
     {% endfor %}
   </div>
 </div>
 
-<!-- Modal de Faltas (já existe, não precisa duplicar) -->
+<!-- Modal -->
 <div class="modal fade" id="modalLinha" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content shadow">
-
       <div class="modal-header">
         <h6 class="modal-title" id="modalLinhaTitulo"></h6>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
       <div class="modal-body p-2">
         <ul class="list-group list-group-flush" id="modalLista"></ul>
         <div class="mt-2 text-end fw-bold">
           Total: <span id="modalTotal">0</span>
         </div>
       </div>
-
     </div>
   </div>
 </div>
-
 
 </div>
 </div>
@@ -202,48 +158,14 @@
 
 {% block scripts %}
 <script>
-/* ===== LINHAS POR SETOR ===== */
-const linhas = {
-  IM:["IM-01","IM-02"],
-  PA:["PA-01","PA-02"],
-  SMT:["SMT-01","SMT-02"],
-  PTH:["PTH-01"]
-};
-
-function atualizarLinhas(){
-  const setor = document.getElementById("setorSelect").value;
-  const linhaSelect = document.getElementById("linhaSelect");
-  const atual = "{{ filtros.linha or '' }}";
-
-  linhaSelect.innerHTML = `<option value="">Todas</option>`;
-  (linhas[setor] || []).forEach(l=>{
-    linhaSelect.innerHTML += `
-      <option value="${l}" ${l===atual?'selected':''}>${l}</option>
-    `;
-  });
-}
-
-document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
-document.addEventListener("DOMContentLoaded", atualizarLinhas);
-
-/* ===== AUTO SUBMIT (POWER BI STYLE) ===== */
-document.querySelectorAll(".auto-submit").forEach(el => {
-  el.addEventListener("change", () => {
-    document.getElementById("filtrosForm").submit();
-  });
-});
-</script>
-
-<script>
   const filtros = {
-    data_inicial: "{{ filtros.data_inicial }}",
-    data_final: "{{ filtros.data_final }}",
+    data_inicial: "{{ filtros.data_inicial or '' }}",
+    data_final: "{{ filtros.data_final or '' }}",
     turno: "{{ filtros.turno or '' }}",
     filial: "{{ filtros.filial or '' }}",
-    linha: "{{ filtros.linha or '' }}"
+    linha: ""
   };
 </script>
+
 <script src="{{ url_for('static', filename='js/powerbi.js') }}"></script>
-
-
 {% endblock %}

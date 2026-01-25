@@ -29,10 +29,38 @@ function toggleLinhasPowerBI() {
 }
 
 // Abrir modal de faltas por linha (mesma função do dashboard)
-async function abrirModalLinha(linha) {
+/* ===== LINHAS POR SETOR ===== */
+const linhas = {
+  IM:["IM-01","IM-02"],
+  PA:["PA-01","PA-02"],
+  SMT:["SMT-01","SMT-02"],
+  PTH:["PTH-01"]
+};
 
-  document.getElementById("modalLinhaTitulo").innerText =
-    `Faltas — ${linha}`;
+function atualizarLinhas(){
+  const setor = document.getElementById("setorSelect").value;
+  const linhaSelect = document.getElementById("linhaSelect");
+  const atual = filtros.linha;
+
+  linhaSelect.innerHTML = `<option value="">Todas</option>`;
+  (linhas[setor] || []).forEach(l=>{
+    linhaSelect.innerHTML += `<option value="${l}" ${l===atual?'selected':''}>${l}</option>`;
+  });
+}
+
+document.getElementById("setorSelect").addEventListener("change", atualizarLinhas);
+document.addEventListener("DOMContentLoaded", atualizarLinhas);
+
+/* ===== AUTO SUBMIT ===== */
+document.querySelectorAll(".auto-submit").forEach(el => {
+  el.addEventListener("change", () => {
+    document.getElementById("filtrosForm").submit();
+  });
+});
+
+/* ===== ABRIR MODAL LINHA ===== */
+async function abrirModalLinha(linha) {
+  document.getElementById("modalLinhaTitulo").innerText = `Faltas — ${linha}`;
 
   const params = new URLSearchParams({
     linha: linha,
@@ -66,7 +94,5 @@ async function abrirModalLinha(linha) {
 
   totalSpan.innerText = total;
 
-  new bootstrap.Modal(
-    document.getElementById("modalLinha")
-  ).show();
+  new bootstrap.Modal(document.getElementById("modalLinha")).show();
 }
