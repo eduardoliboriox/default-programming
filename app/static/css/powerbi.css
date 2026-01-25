@@ -14,10 +14,9 @@
 }
 
 .powerbi-logo {
-    max-width: 180px; 
+    max-width: 120px; 
     height: auto;     
     display: block;
-    margin: 0 auto 0 auto; 
 }
 
 .powerbi-filters {
