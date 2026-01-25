@@ -202,11 +202,6 @@ def ranking_linhas_faltas(filtros):
             return cur.fetchall()
 
 def ranking_linhas_faltas_powerbi(filtros):
-    """
-    Retorna todas as linhas ativas no período, incluindo linhas com 0 falta.
-    Aplica regras visuais de altura mínima para gráficos.
-    """
-
     where = []
     params = []
 
@@ -221,6 +216,14 @@ def ranking_linhas_faltas_powerbi(filtros):
     if filtros.get("filial"):
         where.append("l.filial = %s")
         params.append(filtros["filial"])
+
+    if filtros.get("setor"):
+        where.append("l.setor = %s")
+        params.append(filtros["setor"])
+
+    if filtros.get("linha"):
+        where.append("l.linha = %s")
+        params.append(filtros["linha"])
 
     where_sql = " AND ".join(where)
     if where_sql:
@@ -253,13 +256,7 @@ def ranking_linhas_faltas_powerbi(filtros):
     resultado = []
     for r in rows:
         total = r["total_faltas"]
-
-        # Regra visual
-        if max_faltas == 0:
-            altura = 1
-        else:
-            altura = max_faltas if total == 0 else total
-
+        altura = 1 if max_faltas == 0 else (max_faltas if total == 0 else total)
         resultado.append({
             "linha": r["linha"],
             "faltas": total,
@@ -268,4 +265,5 @@ def ranking_linhas_faltas_powerbi(filtros):
         })
 
     return resultado
+
 
