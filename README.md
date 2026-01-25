@@ -93,6 +93,7 @@ project/
 │   │   └─ pages.py           # Rotas HTML
 │   │
 │   ├─ services/              # Regras de negócio
+│   │   ├─ __init__.py
 │   │   ├─ atestados_service.py
 │   │   ├─ cargos_service.py
 │   │   ├─ lancamentos_service.py
