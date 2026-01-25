@@ -146,34 +146,30 @@
     Ranking de linhas por faltas
   </h6>
 
-  {% set max_faltas = ranking_linhas_faltas | map(attribute='total_faltas') | max or 1 %}
-
   <div class="d-flex align-items-end gap-3" style="height:220px">
-    {% for l in ranking_linhas_faltas %}
-      {% set altura = (l.total_faltas / max_faltas) * 180 %}
+    {% for l in ranking_faltas_powerbi %}
       <div class="text-center" style="width:60px">
-
+  
         <!-- valor -->
         <div class="fw-bold small mb-1">
-          {{ l.total_faltas }}
+          {{ l.faltas }}
         </div>
-
+  
         <!-- coluna -->
         <div
           style="
-            height: {{ altura }}px;
-            background-color: {{ '#dc3545' if l.total_faltas > 0 else '#198754' }};
+            height: {{ l.altura * 180 / (ranking_faltas_powerbi | map(attribute='altura') | max) }}px;
+            background-color: {{ '#dc3545' if l.status == 'CRITICO' else '#198754' }};
             border-radius: 6px;
           ">
         </div>
-
+  
         <!-- label -->
         <small class="d-block mt-1">{{ l.linha }}</small>
       </div>
     {% endfor %}
   </div>
 </div>
-
 
 </div>
 </div>
