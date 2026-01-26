@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 {% block title %}Lançamento de Absenteísmo{% endblock %}
-{% block page_title %}Venttos - Factory Metrics - Lançamento{% endblock %}
+{% block page_title %}
+<div class="d-flex align-items-center w-100">
+  <span class="me-auto">
+    Venttos - Factory Metrics - Lançamentos
+  </span>
+
+  <div class="ms-auto d-flex gap-2">
+    <a href="{{ url_for('pages.dashboard') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </a>
+    <a href="{{ url_for('pages.atestados') }}" class="btn btn-outline-warning">
+      <i class="bi bi-file-earmark-medical"></i> Atestados
+    </a>
+    <button class="btn btn-outline-dark" type="button" onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
-<form id="formLancamento"
-      method="post"
-      action="{{ url_for('api.api_criar_lancamento') }}">
-
-  <!-- JSONs enviados -->
+<form id="formLancamento" method="post" action="{{ url_for('api.api_criar_lancamento') }}">
   <input type="hidden" name="cargos" id="cargosJson">
   <input type="hidden" name="ferias" id="feriasJson">
 
   <div class="row g-3">
 
-    <!-- ================= DADOS GERAIS ================= -->
-
+    <!-- Dados gerais -->
     <div class="col-md-3">
       <label class="form-label">Data</label>
       <input type="date" name="data" class="form-control" required>
@@ -30,11 +43,13 @@
 
     <div class="col-md-3">
       <label class="form-label">Setor</label>
-      <select name="setor" class="form-select" required>
+      <select name="setor" id="setorSelect" class="form-select" required>
+        <option value="">Selecione</option>
         <option value="IM">IM</option>
         <option value="PA">PA</option>
         <option value="SMT">SMT</option>
         <option value="PTH">PTH</option>
+        <option value="VTT">VTT</option>
       </select>
     </div>
 
@@ -64,12 +79,9 @@
       <input type="number" name="hc_real" class="form-control" readonly>
     </div>
 
+    <!-- Absenteísmo e Férias -->
     <hr>
-
-    <!-- ================= ABSENTEÍSMO ================= -->
-
     <h6 class="fw-bold mt-3">Absenteísmo por Cargo</h6>
-
     <div class="row g-3">
       <div class="col-md-6">
         <label class="form-label">Cargo</label>
@@ -87,27 +99,18 @@
           </optgroup>
         </select>
       </div>
-
       <div class="col-md-3">
         <label class="form-label">Qtd</label>
         <input type="number" id="qtd" class="form-control" min="1">
       </div>
-
       <div class="col-md-3 d-flex align-items-end">
-        <button type="button" class="btn btn-secondary w-100" onclick="addCargo()">
-          Adicionar
-        </button>
+        <button type="button" class="btn btn-secondary w-100" onclick="addCargo()">Adicionar</button>
       </div>
     </div>
-
     <ul id="listaCargos" class="list-group mt-3"></ul>
 
     <hr>
-
-    <!-- ================= FÉRIAS ================= -->
-
     <h6 class="fw-bold mt-3">Férias por Cargo</h6>
-
     <div class="row g-3">
       <div class="col-md-6">
         <label class="form-label">Cargo</label>
@@ -125,74 +128,24 @@
           </optgroup>
         </select>
       </div>
-
       <div class="col-md-3">
         <label class="form-label">Qtd</label>
         <input type="number" id="qtdFerias" class="form-control" min="1">
       </div>
-
       <div class="col-md-3 d-flex align-items-end">
-        <button type="button" class="btn btn-info w-100" onclick="addFerias()">
-          Adicionar
-        </button>
+        <button type="button" class="btn btn-info w-100" onclick="addFerias()">Adicionar</button>
       </div>
     </div>
-
     <ul id="listaFerias" class="list-group mt-3"></ul>
 
     <div class="col-12 mt-4">
-      <button type="submit" class="btn btn-primary w-100">
-        Salvar Lançamento
-      </button>
+      <button type="submit" class="btn btn-primary w-100">Salvar Lançamento</button>
     </div>
 
   </div>
 </form>
 
 <div id="msgLancamento" class="mt-3"></div>
-
-<hr class="my-4">
-
-<h6 class="fw-bold">Atestado / Abono</h6>
-
-<div class="row g-3">
-
-  <div class="col-md-3">
-    <label class="form-label">Matrícula</label>
-    <input type="text" name="matricula_atestado" class="form-control">
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Cargo</label>
-    <select name="cargo_atestado" class="form-select">
-      {% for c in cargos_tecnica + cargos_producao %}
-        <option value="{{ c.id }}">{{ c.nome }}</option>
-      {% endfor %}
-    </select>
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Tipo</label>
-    <select name="tipo_atestado" class="form-select">
-      <option value="ATESTADO">Atestado</option>
-      <option value="ABONO">Abono</option>
-    </select>
-  </div>
-
-  <div class="col-md-3">
-    <label class="form-label">Senha</label>
-    <input type="password" name="senha_atestado" class="form-control">
-  </div>
-
-  <div class="col-md-12">
-    <button type="button"
-            class="btn btn-warning w-100"
-            onclick="salvarAtestado()">
-      Registrar Atestado / Abono
-    </button>
-  </div>
-</div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -200,63 +153,45 @@
 let cargos = [];
 let ferias = [];
 
-/* ========= ABSENTEÍSMO ========= */
+/* ===================== ABSENTEÍSMO ===================== */
 function addCargo() {
   const select = document.getElementById("cargo");
   const qtdInput = document.getElementById("qtd");
-
   const cargoId = select.value;
   const cargoNome = select.options[select.selectedIndex].text;
   const qtd = parseInt(qtdInput.value, 10);
-
   if (!cargoId || !qtd) return alert("Informe cargo e quantidade");
-
   cargos.push({ cargo_id: +cargoId, quantidade: qtd });
-
   document.getElementById("listaCargos").innerHTML += `
     <li class="list-group-item d-flex justify-content-between">
       ${cargoNome}
       <span class="badge bg-primary">${qtd}</span>
     </li>`;
-
   atualizarHCReal();
   atualizarJsons();
-
-  select.value = "";
-  qtdInput.value = "";
+  select.value = ""; qtdInput.value = "";
 }
 
-/* ========= FÉRIAS ========= */
+/* ===================== FÉRIAS ===================== */
 function addFerias() {
   const select = document.getElementById("cargoFerias");
   const qtdInput = document.getElementById("qtdFerias");
-
   const cargoId = select.value;
   const cargoNome = select.options[select.selectedIndex].text;
   const qtd = parseInt(qtdInput.value, 10);
-
   if (!cargoId || !qtd) return alert("Informe cargo e quantidade");
-
-  ferias.push({
-    cargo_id: +cargoId,
-    quantidade: qtd,
-    tipo: "FERIAS"
-  });
-
+  ferias.push({ cargo_id: +cargoId, quantidade: qtd, tipo: "FERIAS" });
   document.getElementById("listaFerias").innerHTML += `
     <li class="list-group-item d-flex justify-content-between">
       ${cargoNome}
       <span class="badge bg-info">${qtd}</span>
     </li>`;
-
   atualizarJsons();
-
-  select.value = "";
-  qtdInput.value = "";
+  select.value = ""; qtdInput.value = "";
 }
 
-/* ========= UTIL ========= */
-function atualizarHCReal(){
+/* ===================== UTIL ===================== */
+function atualizarHCReal() {
   const hcPadrao = +document.querySelector("[name='hc_padrao']").value || 0;
   const faltas = cargos.reduce((s,c)=>s+c.quantidade,0);
   document.querySelector("[name='hc_real']").value = Math.max(hcPadrao - faltas, 0);
@@ -267,47 +202,44 @@ function atualizarJsons(){
   document.getElementById("feriasJson").value = JSON.stringify(ferias);
 }
 
-/* ========= LINHAS ========= */
+/* ===================== LINHAS ===================== */
 const linhasPorSetor = {
-  IM:["IM-01","IM-02","IM-03","IM-04","IM-05","IM-06"],
-  PA:["IP-COM","PA-01","PA-03","PA-04","PA-07","PA-08","PA-09","PA-13","WIFI"],
-  PTH:["ADE-01","AXI-01","AXI-02","AXI-03","JUM-01","JUM-02","RAD-01","RAD-02","RAD-03","ROU-01","ROU-02","ROU-03"],
-  SMT:["SMT-01","SMT-02","SMT-03","SMT-04","SMT-05","SMT-06","SMT-07","SMT-08","SMT-09"]
+  IM: ["IM-01","IM-02","IM-03","IM-04","IM-05","IM-06"],
+  PA: ["IP-COM","PA-01","PA-03","PA-04","PA-07","PA-08","PA-09","PA-13","WIFI"],
+  PTH: ["ADE-01","AXI-01","AXI-02","AXI-03","JUM-01","JUM-02","RAD-01","RAD-02","RAD-03","ROU-01","ROU-02","ROU-03"],
+  SMT: ["SMT-01","SMT-02","SMT-03","SMT-04","SMT-05","SMT-06","SMT-07","SMT-08","SMT-09"]
 };
 
-const setorSelect = document.querySelector("[name='setor']");
+const setorSelect = document.getElementById("setorSelect");
 const linhaSelect = document.getElementById("linhaSelect");
 
-function atualizarLinhas(){
+setorSelect.addEventListener("change", () => {
   linhaSelect.innerHTML = `<option value="">Selecione</option>`;
-  (linhasPorSetor[setorSelect.value] || []).forEach(l=>{
-    linhaSelect.innerHTML += `<option value="${l}">${l}</option>`;
-  });
-}
+  const linhas = linhasPorSetor[setorSelect.value] || [];
+  linhas.forEach(l => linhaSelect.innerHTML += `<option value="${l}">${l}</option>`);
+});
 
-setorSelect.addEventListener("change", atualizarLinhas);
-document.addEventListener("DOMContentLoaded", atualizarLinhas);
+linhaSelect.addEventListener("change", async () => {
+  if (!linhaSelect.value) return;
+  const resp = await fetch("/api/hc-linhas");
+  const dados = await resp.json();
+  const hc = dados.find(h => h.setor === setorSelect.value && h.linha === linhaSelect.value);
+  document.querySelector("[name='hc_padrao']").value = hc ? hc.hc_padrao : 0;
+  atualizarHCReal();
+});
 
-/* ========= MENSAGEM AMIGÁVEL AO SALVAR ========= */
+/* ===================== SALVAR ===================== */
 const form = document.getElementById("formLancamento");
 const msgDiv = document.getElementById("msgLancamento");
 
-form.addEventListener("submit", async function(e){
+form.addEventListener("submit", async e => {
   e.preventDefault();
-
-  atualizarJsons(); // garante que os JSONs estão atualizados
-
+  atualizarJsons();
   const data = new FormData(form);
-  
   try {
-    const response = await fetch(form.action, {
-      method: "POST",
-      body: data
-    });
-
+    const response = await fetch(form.action, { method: "POST", body: data });
     const result = await response.json();
-
-    if(response.ok && result.success){  // ✅ consistente
+    if (response.ok && result.success) {
       msgDiv.innerHTML = `<div class="alert alert-success">Lançamento salvo com sucesso! ✅</div>`;
       form.reset();
       cargos = [];
@@ -315,11 +247,9 @@ form.addEventListener("submit", async function(e){
       document.getElementById("listaCargos").innerHTML = "";
       document.getElementById("listaFerias").innerHTML = "";
       atualizarHCReal();
-      atualizarLinhas();
     } else {
-      msgDiv.innerHTML = `<div class="alert alert-danger">Erro ao salvar: ${result.error || 'Verifique os dados.'}</div>`;
+      msgDiv.innerHTML = `<div class="alert alert-danger">Erro: ${result.error || 'Verifique os dados.'}</div>`;
     }
-
   } catch(err){
     msgDiv.innerHTML = `<div class="alert alert-danger">Erro de conexão. Tente novamente.</div>`;
     console.error(err);
