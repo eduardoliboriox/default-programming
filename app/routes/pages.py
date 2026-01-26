@@ -96,12 +96,22 @@ def powerbi():
         **dados
     )
 
+@bp.route("/cargos/hc-linhas")
+def hc_linhas():
+    return render_template(
+        "hclinhas.html",
+        active_menu="cargos"  
+    )
 
 
+@bp.route("/lancamento/atestados")
+def atestados():
+    cargos_tecnica = cargos_service.listar_por_area("TECNICA")
+    cargos_producao = cargos_service.listar_por_area("PRODUCAO")
 
-
-
-
-
-
-
+    return render_template(
+        "atestados.html",
+        cargos_tecnica=cargos_tecnica,
+        cargos_producao=cargos_producao,
+        active_menu="lancamento"
+    )
