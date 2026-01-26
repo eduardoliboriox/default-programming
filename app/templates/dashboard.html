@@ -18,6 +18,13 @@
     <a href="{{ url_for('pages.powerbi') }}" class="btn btn-outline-success">
       <i class="bi bi-bar-chart"></i> Power BI
     </a>
+
+    <button class="btn btn-outline-dark"
+        type="button"
+        onclick="toggleFullscreen()">
+      <i class="bi bi-arrows-fullscreen"></i>
+    </button>
+  
   </div>
 </div>
 {% endblock %}
@@ -71,39 +78,39 @@
   </form>
 
   <!-- KPIs -->
-  <div class="row g-3 mb-4">
+  <div class="row g-3 mb-4 text-center">
     <div class="col-md-2">
-      <div class="card shadow-sm p-3">
+      <div class="card shadow-sm p-3 kpi-card">
         <small>HC Planejado</small>
-        <h4>{{ kpis.hc_planejado }}</h4>
+        <h4 id="kpi-hc-planejado">{{ kpis.hc_planejado }}</h4>
       </div>
     </div>
 
     <div class="col-md-2">
-      <div class="card shadow-sm p-3">
+      <div class="card shadow-sm p-3 kpi-card">
         <small>HC Real</small>
-        <h4>{{ kpis.hc_real }}</h4>
+        <h4 id="kpi-hc-real">{{ kpis.hc_real }}</h4>
       </div>
     </div>
 
     <div class="col-md-2">
-      <div class="card shadow-sm p-3">
+      <div class="card shadow-sm p-3 kpi-card">
         <small>Ausências</small>
-        <h4 class="text-danger">{{ kpis.ausencias }}</h4>
+        <h4 id="kpi-ausencias" class="text-danger">{{ kpis.ausencias }}</h4>
       </div>
     </div>
     
     <div class="col-md-2">
-      <div class="card shadow-sm p-3">
+      <div class="card shadow-sm p-3 kpi-card">
         <small>Absenteísmo Geral</small>
-        <h4>{{ kpis.absenteismo }}%</h4>
+        <h4 id="kpi-abs">{{ kpis.absenteismo }}%</h4>
       </div>
     </div>
 
     <div class="col-md-2">
-      <div class="card shadow-sm p-3">
+      <div class="card shadow-sm p-3 kpi-card">
         <small>Linhas Ativas</small>
-        <h4>{{ kpis.linhas }}</h4>
+        <h4 id="kpi-linhas">{{ kpis.linhas }}</h4>
       </div>
     </div>
   </div>
@@ -469,5 +476,5 @@ async function abrirModalFerias(linha) {
 }
 </script>
 
-
+<script src="{{ url_for('static', filename='js/dashboard-live.js') }}"></script>
 {% endblock %}
