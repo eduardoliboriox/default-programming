@@ -28,3 +28,35 @@ function toggleLinhasPowerBI() {
   btn.textContent = isHidden ? "Recolher" : "Ver mais";
 }
 
+// ================== powerbi.js ==================
+async function refreshPowerBI() {
+  try {
+    const params = new URLSearchParams({
+      data_inicial: document.getElementById("data_inicial").value,
+      data_final: document.getElementById("data_final").value,
+      turno: document.getElementById("turno")?.value || '',
+      filial: document.getElementById("filial")?.value || ''
+    });
+
+    const resp = await fetch(`/api/dashboard/linhas/faltas?${params}`);
+    const dados = await resp.json();
+
+    const lista = document.getElementById("rankingLinhasPowerBI");
+    lista.innerHTML = "";
+    dados.forEach(l => {
+      lista.innerHTML += `
+        <li class="list-group-item d-flex justify-content-between"
+            style="cursor:pointer"
+            onclick="abrirModalLinhaPowerBI('${l.linha}')">
+          <span>${l.linha}</span>
+          <span class="badge bg-danger">${l.absenteismo}%</span>
+        </li>`;
+    });
+
+  } catch (e) {
+    console.error("Erro ao atualizar PowerBI:", e);
+  }
+}
+
+setInterval(refreshPowerBI, 5000);
+refreshPowerBI();
