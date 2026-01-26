@@ -8,6 +8,8 @@ from app.services.lancamentos_service import (
 )
 from app.services.pcp_service import ranking_linhas_ferias
 from app.services.atestados_service import registrar_atestado
+from app.services.relatorios_service import gerar_relatorio
+from app.services import hc_linhas_service
 
 bp = Blueprint("api", __name__)
 
@@ -122,4 +124,72 @@ def api_linhas_por_setor():
         return jsonify([])
     return jsonify(linhas.get(setor, []))
 
+@bp.route("/relatorios", methods=["GET"])
+def api_relatorios():
+    setor = request.args.get("setor") or None
+    tipo = request.args.get("tipo", "MENSAL")
 
+    dados = gerar_relatorio(setor, tipo)
+    return jsonify(dados)
+
+@bp.route("/hc-linhas", methods=["GET"])
+def api_listar_hc_linhas():
+    return jsonify(hc_linhas_service.listar())
+
+
+@bp.route("/hc-linhas", methods=["POST"])
+def api_salvar_hc_linha():
+    return jsonify(hc_linhas_service.salvar(request.form))
+
+
+@bp.route("/hc-linhas", methods=["DELETE"])
+def api_excluir_hc_linha():
+    return jsonify(
+        hc_linhas_service.excluir(request.form.get("id"))
+    )
+
+@bp.route("/powerbi/resumo", methods=["GET"])
+def api_powerbi_resumo():
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial"),
+        "setor": request.args.get("setor"),
+        "linha": request.args.get("linha"),
+    }
+
+    from app.services.pcp_service import (
+        resumo_dashboard,
+        ranking_linhas_faltas_powerbi
+    )
+
+    resumo = resumo_dashboard(filtros)
+
+    return jsonify({
+        "kpis": resumo["kpis"],
+        "ranking_faltas": ranking_linhas_faltas_powerbi(filtros)
+    })
+
+
+@bp.route("/dashboard/resumo", methods=["GET"])
+def api_dashboard_resumo():
+    filtros = {
+        "data_inicial": request.args.get("data_inicial"),
+        "data_final": request.args.get("data_final"),
+        "turno": request.args.get("turno"),
+        "filial": request.args.get("filial")
+    }
+
+    from app.services.pcp_service import resumo_dashboard
+
+    dados = resumo_dashboard(filtros)
+
+    return jsonify({
+        "kpis": dados["kpis"],
+        "ranking_setor": dados["ranking_setor"],
+        "ranking_filial": dados["ranking_filial"],
+        "ranking_linhas": dados["ranking_linhas"],
+        "ranking_linhas_ferias": dados["ranking_linhas_ferias"],
+        "ranking_cargos": dados["ranking_cargos"]
+    })
