@@ -99,4 +99,3 @@ def ferias_por_linha(filtros):
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, params)
             return cur.fetchall()
-
