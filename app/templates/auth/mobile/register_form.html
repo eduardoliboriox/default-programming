@@ -1,0 +1,31 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Cadastro{% endblock %}
+
+{% block content %}
+<section class="mobile-screen"
+  style="background-image:url('{{ url_for('static', filename='images/banners/bg-cad-form.png') }}')">
+
+  <form method="post"
+        action="{{ url_for('auth.register') }}"
+        class="mobile-form">
+
+    <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
+    <input name="matricula" class="form-control mb-2" placeholder="Matrícula" required>
+
+    <select name="setor" class="form-select mb-2" required>
+      <option value="">Setor</option>
+      <option>Direção</option>
+      <option>Engenharia</option>
+      <option>PCP</option>
+      <option>Produção</option>
+      <option>TI</option>
+    </select>
+
+    <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+    <input type="password" name="password" class="form-control mb-2" placeholder="Senha" required>
+    <input type="password" name="password_confirm" class="form-control mb-3" placeholder="Confirmar senha" required>
+
+    <button class="btn btn-outline-primary w-100">Cadastrar</button>
+  </form>
+</section>
+{% endblock %}
