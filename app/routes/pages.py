@@ -2,14 +2,17 @@ from flask import Blueprint, render_template, request
 from app.services.pcp_service import resumo_dashboard, ranking_linhas_faltas_powerbi
 from datetime import date
 from app.services import cargos_service
+from flask_login import login_required
 
 bp = Blueprint("pages", __name__)
 
 @bp.route("/")
+@login_required
 def inicio():
     return render_template("inicio.html")
 
 @bp.route("/dashboard")
+@login_required
 def dashboard():
     data_inicial = request.args.get("data_inicial")
     data_final = request.args.get("data_final")
@@ -39,11 +42,13 @@ def dashboard():
     )
 
 @bp.route("/cargos")
+@login_required
 def cargos():
     lista = cargos_service.listar()
     return render_template("cargos.html", cargos=lista)
 
 @bp.route("/lancamento")
+@login_required
 def lancamento():
     cargos_tecnica = cargos_service.listar_por_area("TECNICA")
     cargos_producao = cargos_service.listar_por_area("PRODUCAO")
@@ -55,6 +60,7 @@ def lancamento():
     )
 
 @bp.route("/dashboard/linha/ferias", methods=["GET"])
+@login_required
 def ferias_linha():
     linha = request.args.get("linha")
     filtros = {
@@ -66,10 +72,12 @@ def ferias_linha():
     return jsonify(ferias_por_linha(filtros))
 
 @bp.route("/relatorios")
+@login_required
 def relatorios():
     return render_template("relatorios.html", active_menu="dashboard")
 
 @bp.route("/powerbi")
+@login_required
 def powerbi():
     filtros = {
         "data_inicial": request.args.get("data_inicial"),
@@ -97,6 +105,7 @@ def powerbi():
     )
 
 @bp.route("/cargos/hc-linhas")
+@login_required
 def hc_linhas():
     return render_template(
         "hclinhas.html",
@@ -105,6 +114,7 @@ def hc_linhas():
 
 
 @bp.route("/lancamento/atestados")
+@login_required
 def atestados():
     cargos_tecnica = cargos_service.listar_por_area("TECNICA")
     cargos_producao = cargos_service.listar_por_area("PRODUCAO")
@@ -115,3 +125,7 @@ def atestados():
         cargos_producao=cargos_producao,
         active_menu="lancamento"
     )
+
+@bp.route("/login")
+def login():
+    return render_template("auth/login.html")
