@@ -1,9 +1,9 @@
 from flask import Blueprint, redirect, url_for, render_template, current_app, request, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from authlib.integrations.flask_client import OAuth
-from app.auth.service import get_or_create_user, register_user, authenticate_local
+from app.auth.service import get_or_create_user, register_user, authenticate_local, change_user_password
 from app.auth.models import User
-from app.auth.repository import list_pending_users, approve_user, deny_user, list_all_users
+from app.auth.repository import list_pending_users, approve_user, deny_user, list_all_users, get_user_by_id
 from app.auth.decorators import admin_required
 from user_agents import parse
 
@@ -181,3 +181,30 @@ def login_mobile_form():
 @bp.route("/register/mobile")
 def register_mobile_form():
     return render_template("auth/mobile/register_form.html")
+
+
+@bp.route("/meu-perfil", methods=["GET", "POST"])
+@login_required
+def my_profile():
+    user_data = get_user_by_id(current_user.id)
+
+    if request.method == "POST":
+        try:
+            result = change_user_password(
+                user_id=current_user.id,
+                current_password=request.form.get("current_password"),
+                new_password=request.form.get("new_password"),
+                confirm_password=request.form.get("confirm_password"),
+            )
+
+            if result == "EMPTY":
+                flash("Nenhuma alteração realizada", "info")
+            else:
+                flash("Senha alterada com sucesso", "success")
+
+        except ValueError as e:
+            flash(str(e), "danger")
+
+        return redirect(url_for("auth.my_profile"))
+
+    return render_template("auth/myperfil.html", user=user_data)
