@@ -24,4 +24,3 @@ def atualizar(dados):
 def excluir(dados):
     cargos_repository.excluir(dados["id"])
     return {"sucesso": True}
- 
