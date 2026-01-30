@@ -45,7 +45,7 @@ def login():
     # Desktop
     return render_template("auth/login.html")
 
-
+# OAuth Google
 @bp.route("/login/google")
 def login_google():
     return oauth.google.authorize_redirect(
@@ -62,19 +62,23 @@ def google_callback():
 
     return redirect(url_for("pages.dashboard"))
 
+# OAuth Github
 @bp.route("/login/github")
 def login_github():
+    if not current_app.config.get("GITHUB_CLIENT_ID"):
+        flash("Login com GitHub indisponível no momento", "warning")
+        return redirect(url_for("auth.login"))
+
     return oauth.github.authorize_redirect(
-        url_for("auth.github_callback", _external=True)
+        url_for("auth.github_callback", _external=True, _scheme="https")
     )
 
-@bp.route("/auth/github")
+@bp.route("/github/callback")
 def github_callback():
     token = oauth.github.authorize_access_token()
     resp = oauth.github.get("user")
     profile = resp.json()
 
-    # email no GitHub pode vir separado
     if not profile.get("email"):
         emails = oauth.github.get("user/emails").json()
         primary = next(e for e in emails if e["primary"])
@@ -89,8 +93,6 @@ def github_callback():
 def logout():
     logout_user()
     return redirect(url_for("auth.login"))
-
-
 
 @bp.route("/login/local", methods=["POST"])
 def login_local():
@@ -124,7 +126,6 @@ def register():
 
     return redirect(url_for("auth.login"))
 
-
 @bp.route("/admin/users")
 @login_required
 @admin_required
@@ -154,7 +155,6 @@ def reject_user_route(user_id):
     flash("Usuário removido", "info")
     return redirect(url_for("auth.admin_users"))
 
-
 @bp.route("/admin/users/all")
 @login_required
 @admin_required
@@ -166,7 +166,6 @@ def admin_users_all():
     users = list_all_users(search)
     return render_template("auth/users_all.html", users=users)
 
-
 # experiência login mobile 
 @bp.route("/login/mobile")
 def login_mobile_choice():
@@ -177,11 +176,9 @@ def login_mobile_choice():
 def login_mobile_form():
     return render_template("auth/mobile/login_form.html")
 
-
 @bp.route("/register/mobile")
 def register_mobile_form():
     return render_template("auth/mobile/register_form.html")
-
 
 @bp.route("/meu-perfil", methods=["GET", "POST"])
 @login_required
