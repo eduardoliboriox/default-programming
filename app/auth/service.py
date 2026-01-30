@@ -3,7 +3,9 @@ from app.auth.repository import (
     create_user,
     create_local_user,
     get_user_by_username,
-    count_users
+    count_users,
+    get_user_by_id,
+    update_user_password
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -61,3 +63,24 @@ def authenticate_local(username, password):
     if not check_password_hash(user["password_hash"], password):
         return None
     return user
+
+
+# ==============================================
+#  ALTERAÇÃO DE SENHA
+# ==============================================
+def change_user_password(user_id, current_password, new_password, confirm_password):
+    if not new_password:
+        return "EMPTY"
+
+    if new_password != confirm_password:
+        raise ValueError("Nova senha e confirmação não conferem")
+
+    user = get_user_by_id(user_id)
+    if not user:
+        raise ValueError("Usuário não encontrado")
+
+    if not check_password_hash(user["password_hash"], current_password):
+        raise ValueError("Senha atual incorreta")
+
+    update_user_password(user_id, new_password)
+    return "OK"
