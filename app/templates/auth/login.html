@@ -1,5 +1,5 @@
 {% extends "layouts/auth.html" %}
-{% block title %}Acesso ao sistema{% endblock %}
+{% block title %}Factory Metrics{% endblock %}
 
 {% block content %}
 
@@ -10,30 +10,24 @@
   </div>
 
   <div class="actions">
-    
+
     <!-- Login -->
     <a href="{{ url_for('auth.logout') }}"
        class="btn btn-outline-purple btn-sm">
       Fazer login
     </a>
-
-    <!-- Cadastro -->
+    
     <button class="btn btn-outline-primary"
             data-bs-toggle="collapse"
             data-bs-target="#register">
       Cadastrar-se
     </button>
-
   </div>
 </header>
 
+<!-- CONTAINER CENTRAL -->
+<div class="auth-container auth-container-centered">
 
-<div class="auth-container">
-
-  <!-- IMAGEM / VISUAL -->
-  <div class="auth-visual d-none d-lg-block"></div>
-
-  <!-- CARD -->
   <div class="auth-card-wrapper">
     <div class="auth-card" id="login">
 
@@ -52,14 +46,33 @@
 
       <!-- LOGIN LOCAL -->
       <form method="post" action="{{ url_for('auth.login_local') }}">
+
+        <!-- USUÁRIO -->
         <div class="mb-3">
-          <label class="form-label">Usuário</label>
-          <input type="text" name="username" class="form-control" required>
+          <div class="input-group auth-input">
+            <span class="input-group-text">
+              <i class="bi bi-person"></i>
+            </span>
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   placeholder="Usuário"
+                   required>
+          </div>
         </div>
 
+        <!-- SENHA -->
         <div class="mb-3">
-          <label class="form-label">Senha</label>
-          <input type="password" name="password" class="form-control" required>
+          <div class="input-group auth-input">
+            <span class="input-group-text">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   placeholder="Senha"
+                   required>
+          </div>
         </div>
 
         <button class="btn btn-primary w-100 mb-3">
@@ -68,7 +81,9 @@
       </form>
 
       <div class="text-center mb-3">
-        <button class="btn btn-link p-0" data-bs-toggle="collapse" data-bs-target="#register">
+        <button class="btn btn-link p-0"
+                data-bs-toggle="collapse"
+                data-bs-target="#register">
           Cadastrar-se
         </button>
       </div>
@@ -76,7 +91,6 @@
       <!-- CADASTRO -->
       <div id="register" class="collapse">
         <form method="post" action="{{ url_for('auth.register') }}">
-
           <input name="full_name" class="form-control mb-2" placeholder="Nome completo" required>
           <input name="matricula" class="form-control mb-2" placeholder="Matrícula" required>
 
@@ -101,26 +115,21 @@
 
       <hr>
 
-    <!-- OAUTH -->
-    <div class="d-grid gap-2 mb-4">
-      <a href="{{ url_for('auth.login_google') }}" class="btn btn-outline-danger">
-        <i class="bi bi-google me-2"></i> Google
-      </a>
-    
-      <a href="{{ url_for('auth.login_github') }}" class="btn btn-outline-dark">
-        <i class="bi bi-github me-2"></i> GitHub
-      </a>
-    </div>
-    
-    <div class="text-center mt-3">
-      <small class="fw-semibold d-block">
-        EDUARDO LIBÓRIO
-      </small>
-      <small class="text-muted">
-        Junior Backend Developer
-      </small>
-    </div>
+      <!-- OAUTH -->
+      <div class="d-grid gap-2 mb-4">
+        <a href="{{ url_for('auth.login_google') }}" class="btn btn-outline-danger">
+          <i class="bi bi-google me-2"></i> Google
+        </a>
 
+        <a href="{{ url_for('auth.login_github') }}" class="btn btn-outline-dark">
+          <i class="bi bi-github me-2"></i> GitHub
+        </a>
+      </div>
+
+      <div class="text-center mt-3">
+        <small class="fw-semibold d-block">EDUARDO LIBÓRIO</small>
+        <small class="text-muted">Junior Backend Developer</small>
+      </div>
 
     </div>
   </div>
