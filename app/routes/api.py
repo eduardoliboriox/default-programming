@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-
 from app.services import modelos_service, cargos_service
 from app.services.lancamentos_service import (
     criar_lancamento,
@@ -80,7 +79,6 @@ def api_ranking_linhas_ferias():
     }
     return jsonify(ranking_linhas_ferias(filtros))
 
-
 # Faltas por linha (modal)
 @bp.route("/dashboard/linha/cargos", methods=["GET"])
 def api_faltas_linha():
@@ -92,7 +90,6 @@ def api_faltas_linha():
     }
     linha = request.args.get("linha")
     return jsonify(faltas_por_linha(linha, filtros))
-
 
 # Férias por linha (modal)
 @bp.route("/dashboard/linha/ferias_cargos", methods=["GET"])
@@ -136,11 +133,9 @@ def api_relatorios():
 def api_listar_hc_linhas():
     return jsonify(hc_linhas_service.listar())
 
-
 @bp.route("/hc-linhas", methods=["POST"])
 def api_salvar_hc_linha():
     return jsonify(hc_linhas_service.salvar(request.form))
-
 
 @bp.route("/hc-linhas", methods=["DELETE"])
 def api_excluir_hc_linha():
@@ -170,7 +165,6 @@ def api_powerbi_resumo():
         "kpis": resumo["kpis"],
         "ranking_faltas": ranking_linhas_faltas_powerbi(filtros)
     })
-
 
 @bp.route("/dashboard/resumo", methods=["GET"])
 def api_dashboard_resumo():
