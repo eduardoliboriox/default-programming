@@ -1,9 +1,8 @@
 {% extends "layouts/auth.html" %}
 {% block title %}Cadastro{% endblock %}
-
 {% block content %}
-<section class="mobile-screen"
-  style="background-image:url('{{ url_for('static', filename='images/banners/bg-cad-form.png') }}')">
+<section class="mobile-screen register-form"
+  style="background-image:url('{{ url_for('static', filename='images/banners/bg-cad-form.jpg') }}')">
 
   <form method="post"
         action="{{ url_for('auth.register') }}"
