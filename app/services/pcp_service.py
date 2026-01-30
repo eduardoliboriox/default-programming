@@ -133,7 +133,6 @@ def resumo_dashboard(filtros):
 
     }
 
-
 def ranking_cargos(filtros):
     where = []
     params = []
@@ -162,7 +161,6 @@ def ranking_cargos(filtros):
         with conn.cursor(row_factory=dict_row) as cur:
             cur.execute(query, params)
             return cur.fetchall()
-
 
 def ranking_linhas_faltas(filtros):
     where = []
