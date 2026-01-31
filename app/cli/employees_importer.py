@@ -14,33 +14,39 @@ def normalize_status(value: str) -> str:
     return "ACTIVE" if "ativo" in v else "INACTIVE"
 
 
+def generate_codes(cur, start=1010):
+    cur.execute("""
+        SELECT id
+        FROM employees
+        ORDER BY id
+    """)
+
+    rows = cur.fetchall()
+
+    updates = [
+        (f"{start + i:06}", r["id"])
+        for i, r in enumerate(rows)
+    ]
+
+    cur.executemany("""
+        UPDATE employees
+        SET employee_code = %s
+        WHERE id = %s
+    """, updates)
+
+
 @click.command("import-employees")
 def import_employees():
     """
-    CLI:
     flask import-employees
     """
 
-    # 🔥 CORREÇÃO AQUI
     project_root = Path(current_app.root_path).parent
     data_dir = project_root / "data"
 
-    print(f"📁 Looking for Excel in: {data_dir}")
-
-    excel_file = None
-
-    for ext in ("xls", "xlsx", "XLS", "XLSX"):
-        candidate = data_dir / f"Lista-de-Funcionarios-Venttos-17-12-25-Completo.{ext}"
-        if candidate.exists():
-            excel_file = candidate
-            break
-
-    if not excel_file:
-        raise RuntimeError(f"Excel file NOT found in {data_dir}")
+    excel_file = next(data_dir.glob("Lista-de-Funcionarios-Venttos-17-12-25-Completo.*"))
 
     engine = "xlrd" if excel_file.suffix.lower() == ".xls" else "openpyxl"
-
-    print(f"📊 Reading: {excel_file.name}")
 
     df = pd.read_excel(excel_file, engine=engine)
 
@@ -52,15 +58,6 @@ def import_employees():
         df.columns[5]: "status",
         df.columns[6]: "branch_name",
     })
-
-    df = df[[
-        "full_name",
-        "job_title",
-        "department",
-        "hired_at",
-        "status",
-        "branch_name"
-    ]]
 
     df["status"] = df["status"].apply(normalize_status)
     df["hired_at"] = pd.to_datetime(df["hired_at"], errors="coerce").dt.date
@@ -78,10 +75,9 @@ def import_employees():
         if r.full_name
     ]
 
-    print(f"📌 Rows to insert: {len(rows)}")
-
     with get_db() as conn:
         with conn.cursor() as cur:
+
             cur.execute("TRUNCATE TABLE employees RESTART IDENTITY;")
 
             cur.executemany("""
@@ -96,6 +92,8 @@ def import_employees():
                 VALUES (%s,%s,%s,%s,%s,%s)
             """, rows)
 
+            generate_codes(cur)
+
         conn.commit()
 
-    print("✅ Employees imported successfully!")
+    print("✅ Employees imported with employee_code!")
