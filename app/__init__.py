@@ -39,5 +39,7 @@ def create_app():
     # CLI commands
     from app.cli.employees_importer import import_employees
     app.cli.add_command(import_employees)
+    from app.cli.employees_code_generator import generate_employee_codes
+    app.cli.add_command(generate_employee_codes)
 
     return app
