@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 # Detecta arquivo XLS ou XLSX
 EXCEL_PATH = None
 for ext in ["xls", "xlsx", "XLS", "XLSX"]:
-    candidate = BASE_DIR / "app" / "data" / f"Lista de Funcionarios Venttos 17.12.25 - Completo.{ext}"
+    candidate = BASE_DIR / "app" / "data" / f"Lista-de-Funcionarios-Venttos-17-12-25-Completo.{ext}"
     if candidate.exists():
         EXCEL_PATH = candidate
         break
@@ -113,3 +113,4 @@ def main():
 # =========================
 if __name__ == "__main__":
     main()
+
